@@ -21,10 +21,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Face Flow App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme:
+      ThemeData.from(colorScheme: ColorScheme.light()),
+      themeMode: ThemeMode.dark,
+      darkTheme: ThemeData.from(colorScheme: ColorScheme.dark()),
       home: MyHomePage(title: 'Face Flow App'),
     );
   }
@@ -44,18 +46,19 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      // backgroundColor: Colors.blue,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             SizedBox(height: 8,),
-            Text('Face Project App', style: TextStyle(
+            Text('    Face Project App', style: TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w600,
-              color: Colors.white70, ),
-              textAlign: TextAlign.center,),
-          SizedBox( height: 15,),
+              // color: Colors.white70,
+            ),
+              textAlign: TextAlign.left,),
+          SizedBox( height: 14, ),
           Expanded(
             child: MediaGrid(),
             )
@@ -66,7 +69,12 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: getImage,
         tooltip: 'Take a photo',
         child: Icon(Icons.camera_alt),
-      )
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(18.0))
+        ),
+        foregroundColor: Colors.grey,
+        backgroundColor: Colors.black87,
+      ),
       );
   }
 
@@ -117,8 +125,7 @@ class _MediaGridState extends State<MediaGrid> {
     lastPage = currentPage;
     var permissionGranted = await PhotoManager.requestPermission();
     if (permissionGranted) {
-      List<AssetPathEntity> albums =
-      await PhotoManager.getAssetPathList(onlyAll: true, type: RequestType.image);
+      List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(onlyAll: true, type: RequestType.image);
       print(albums);
       List<AssetEntity> media =  await albums[0].getAssetListPaged(currentPage, 60);
       print(media);
@@ -127,8 +134,8 @@ class _MediaGridState extends State<MediaGrid> {
         // _absolutePath = await FlutterAbsolutePath.getAbsolutePath(asset.id);
         temp.add(
             FutureBuilder(
-            future: asset.thumbDataWithSize(150, 150),
-            // future: asset.originBytes, // . thumbDataWithSize(200, 200),
+            future: asset.thumbData,
+            // future: asset.thumbDataWithSize(150, 150),
             builder: (BuildContext context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 return RawMaterialButton(
@@ -144,6 +151,13 @@ class _MediaGridState extends State<MediaGrid> {
                     child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
+                          boxShadow: [BoxShadow(
+                            color: Colors.black.withOpacity(0.8),
+                            spreadRadius: 3,
+                            blurRadius: 5,
+                            offset: Offset(2, 2),
+                          ),
+                          ],
                           image: DecorationImage(
                               image: MemoryImage(snapshot.data),
                               fit: BoxFit.cover
@@ -178,10 +192,11 @@ class _MediaGridState extends State<MediaGrid> {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors.white10,
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),)
+              // topRight: Radius.circular(5),
+            )
         ),
         child: GridView.builder(
             itemCount: _mediaList.length,
