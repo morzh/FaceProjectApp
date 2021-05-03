@@ -44,10 +44,24 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
+      backgroundColor: Colors.blue,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            SizedBox(height: 8,),
+            Text('Face Project App', style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: Colors.white70, ),
+              textAlign: TextAlign.center,),
+          SizedBox( height: 15,),
+          Expanded(
+            child: MediaGrid(),
+            )
+          ],
+      )
       ),
-      body: MediaGrid(),
       floatingActionButton:  FloatingActionButton(
         onPressed: getImage,
         tooltip: 'Take a photo',
@@ -113,28 +127,33 @@ class _MediaGridState extends State<MediaGrid> {
         // _absolutePath = await FlutterAbsolutePath.getAbsolutePath(asset.id);
         temp.add(
             FutureBuilder(
-            future: asset.originBytes, // . thumbDataWithSize(200, 200),
+            future: asset.thumbDataWithSize(150, 150),
+            // future: asset.originBytes, // . thumbDataWithSize(200, 200),
             builder: (BuildContext context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done)
+              if (snapshot.connectionState == ConnectionState.done) {
                 return RawMaterialButton(
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => DetailsPage(
-                              selectedImage: Image.memory(snapshot.data)
-                            )
-                        )
+                          builder: (context) =>
+                              DetailsPage(
+                                  selectedImage: Image.memory(snapshot.data)
+                              )
+                      )
                       );
                     },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      image: DecorationImage(
-                        image: MemoryImage(snapshot.data),
-                        fit: BoxFit.cover
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: DecorationImage(
+                              image: MemoryImage(snapshot.data),
+                              fit: BoxFit.cover
                           )
                       ),
-                  )
+                    )
                 );
+              } else {
+                return Icon(Icons.image_rounded);
+              }
             return Container();
               }
           )

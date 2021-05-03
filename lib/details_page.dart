@@ -24,6 +24,26 @@ class DetailsPage extends StatelessWidget{
                 ),
               ),
             ),
+            Container(
+              height: 150,
+              child: Column(
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                    child: Column(
+                      children: <Widget>[
+                        Text("Some text", style: TextStyle(
+                          color: Colors.lightBlue,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
