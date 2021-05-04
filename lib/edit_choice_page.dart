@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
-class DetailsPage extends StatelessWidget{
+class EditChoicePage extends StatefulWidget {
   final Image selectedImage;
-  double _imageScale = 1.0;
-  double _imagePreviousScale = 1.0;
-
-  DetailsPage({@required this.selectedImage}){
+  EditChoicePage({@required this.selectedImage}){
     print(selectedImage);
   }
+  @override
+  _EditChoicePage createState() => _EditChoicePage();
+}
+
+class _EditChoicePage extends State<EditChoicePage>{
+
+  double _imageScale = 1.0;
+  double _imagePreviousScale = 1.0;
 
   @override
   Widget build(BuildContext context){
@@ -20,7 +25,7 @@ class DetailsPage extends StatelessWidget{
                 onPanEnd: (e) => print(e),
                 child: Container(
                   child: Image(
-                      image: selectedImage.image,
+                      image: widget.selectedImage.image,
                       fit: BoxFit.fitWidth,
                   )
                   ),

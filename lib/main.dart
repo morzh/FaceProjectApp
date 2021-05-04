@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:face_project_app/details_page.dart';
+import 'package:face_project_app/edit_choice_page.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:image_picker/image_picker.dart';
@@ -83,8 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
       _image = imageFile;
     });
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => DetailsPage(
-            selectedImage: Image.file(imageFile)
+        builder: (context) => EditChoicePage(
+            selectedImage: Image.file(_image)
         )
     )
     );
@@ -159,8 +159,8 @@ class _MediaGridState extends State<MediaGrid> {
                       File file = await asset.file;
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context) =>
-                              DetailsPage(
-                                  selectedImage: Image.file(file)
+                              EditChoicePage(
+                              selectedImage: Image.file(file)
                               )
                       )
                       );
