@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 class DetailsPage extends StatelessWidget{
   final Image selectedImage;
+  double _imageScale = 1.0;
+  double _imagePreviousScale = 1.0;
 
   DetailsPage({@required this.selectedImage}){
     print(selectedImage);
@@ -14,16 +16,16 @@ class DetailsPage extends StatelessWidget{
         child: Column(
           children: <Widget>[
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(11), bottomRight: Radius.circular(11)),
-                  image: DecorationImage(
-                    image: selectedImage.image,
-                    fit: BoxFit.fitWidth,
+              child: GestureDetector(
+                onPanEnd: (e) => print(e),
+                child: Container(
+                  child: Image(
+                      image: selectedImage.image,
+                      fit: BoxFit.fitWidth,
                   )
+                  ),
                 ),
               ),
-            ),
             Container(
               height: 150,
               child: Column(

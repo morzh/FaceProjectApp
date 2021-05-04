@@ -1,16 +1,13 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:typed_data';
-import 'package:path/path.dart' as p;
-
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
-import 'package:flutter_absolute_path/flutter_absolute_path.dart';
 
 import 'package:flutter/material.dart';
+
+import 'package:face_project_app/details_page.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:image_picker/image_picker.dart';
-import 'details_page.dart';
+
 
 void main() {
   runApp(MyApp());
