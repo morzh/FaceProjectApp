@@ -119,6 +119,25 @@ class _MediaGridState extends State<MediaGrid> {
     }
   }
 
+  Future<void> _showInfo(AssetEntity entity) async {
+    if (entity.type == AssetType.video) {
+      var file = await entity.file;
+      if (file == null) {
+        return;
+      }
+      var length = file.lengthSync();
+      var size = entity.size;
+      print(
+        "${entity.id} length = $length, "
+            "size = $size, "
+            "dateTime = ${entity.createDateTime}",
+      );
+    } else {
+      final Size size = entity.size;
+      print("${entity.id} size = $size, dateTime = ${entity.createDateTime}");
+    }
+  }
+
   _fetchNewMedia() async {
     _applicationDocumentsDirectory = await getApplicationDocumentsDirectory();
     print(_applicationDocumentsDirectory.path);
@@ -138,12 +157,13 @@ class _MediaGridState extends State<MediaGrid> {
             // future: asset.thumbDataWithSize(150, 150),
             builder: (BuildContext context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return RawMaterialButton(
-                    onPressed: () {
+                return GestureDetector(
+                    onTap: () async {
+                      File file = await asset.file;
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context) =>
                               DetailsPage(
-                                  selectedImage: Image.memory(snapshot.data)
+                                  selectedImage: Image.file(file)
                               )
                       )
                       );
@@ -153,7 +173,7 @@ class _MediaGridState extends State<MediaGrid> {
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [BoxShadow(
                             color: Colors.black.withOpacity(0.8),
-                            spreadRadius: 3,
+                            spreadRadius: 2,
                             blurRadius: 5,
                             offset: Offset(2, 2),
                           ),
