@@ -25,6 +25,7 @@ dependencies:
   image_picker:  ^0.7.2
   path_provider: ^2.0.0
   path: ^1.8.0
+  photo_view: ^0.11.1
   flutter_absolute_path: ^1.0.0
   flutter:
     sdk: flutter
