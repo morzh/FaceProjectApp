@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "821864694785",
+    "project_id": "faceprojectapp",
+    "storage_bucket": "faceprojectapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:821864694785:android:4270e0742c3a9ca1d86c00",
+        "android_client_info": {
+          "package_name": "com.example.face_project_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "821864694785-r1d8ui1ipacf0hgn46r2spa8osvrjcra.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMOhnQfbAM7kSOOv7YjVdSLrznGMD5WpI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "821864694785-r1d8ui1ipacf0hgn46r2spa8osvrjcra.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

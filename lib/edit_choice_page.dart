@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' show Vector3;
 import 'package:photo_view/photo_view.dart';
+import ‘package:mlkit/mlkit.dart’;
+
+
+List<AssetImage> _editChoiceButtons = [
+  AssetImage('assets/buttons_images/male-female.png'),
+  AssetImage('assets/buttons_images/male-female.png'),
+  AssetImage('assets/buttons_images/male-female.png'),
+  AssetImage('assets/buttons_images/male-female.png'),
+  AssetImage('assets/buttons_images/male-female.png'),
+  AssetImage('assets/buttons_images/male-female.png'),
+  AssetImage('assets/buttons_images/male-female.png'),
+  AssetImage('assets/buttons_images/male-female.png'),
+];
 
 class EditChoicePage extends StatefulWidget {
   final Image selectedImage;
   EditChoicePage({@required this.selectedImage}){
-    print(selectedImage);
+    // print(selectedImage);
   }
   @override
   _EditChoicePage createState() => _EditChoicePage();
@@ -23,47 +36,39 @@ class _EditChoicePage extends State<EditChoicePage>{
         child: Column(
           children: <Widget>[
             Expanded(
-              child: GestureDetector(
-                // dragStartBehavior: DragStartBehavior.start,
-                onScaleStart: (ScaleStartDetails details) {
-                  _previousScale = _scale;
-                  setState(() {});
-                },
-                onScaleUpdate: (ScaleUpdateDetails details) {
-                  _scale = _previousScale * details.scale;
-                  setState(() {});
-                },
-                onScaleEnd: (ScaleEndDetails details) {
-                  _previousScale = 1.0;
-                  setState(() {});
-                },
-                  // onHorizontalDragStart: (),
-                  child: Transform(
-                    alignment: FractionalOffset.center,
-                    transform: Matrix4.diagonal3(Vector3(_scale, _scale, _scale)),
-                    child: Image(
-                        image: widget.selectedImage.image,
-                        fit: BoxFit.fitWidth,
-                    ),
-                  )
-                  ),
+                child: Container(
+                    child: PhotoView(
+                      imageProvider: widget.selectedImage.image,
+                    )
+                ),
                 ),
             Container(
-              height: 150,
+              height: 210,
               child: Column(
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: Column(
-                      children: <Widget>[
-                        Text("Some text", style: TextStyle(
-                          color: Colors.lightBlue,
-                          fontSize: 22,
-                          fontWeight: FontWeight.w600,
+                    padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                    child: Table(
+                      defaultColumnWidth: FixedColumnWidth(80),
+                      children: [
+                        TableRow(
+                          children: [
+                            Image(image: _editChoiceButtons[0]),
+                            Image(image: _editChoiceButtons[1]),
+                            Image(image: _editChoiceButtons[2]),
+                            Image(image: _editChoiceButtons[3])
+                            ]
                         ),
-                        ),
+                        TableRow(
+                          children: [
+                            Image(image: _editChoiceButtons[4]),
+                            Image(image: _editChoiceButtons[5]),
+                            Image(image: _editChoiceButtons[6]),
+                            Image(image: _editChoiceButtons[7]),
+                          ]
+                        )
                       ],
-                    ),
+                    )
                   ),
                 ],
               ),
