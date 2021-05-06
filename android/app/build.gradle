@@ -32,9 +32,9 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
-    dependencies {
-        api 'com.google.firebase:firebase-ml-vision-face-model:20.0.2'
-    }
+//    dependencies {
+//        api 'com.google.firebase:firebase-ml-vision-face-model:20.0.2'
+//    }
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
