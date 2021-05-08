@@ -31,8 +31,9 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  // MyHomePage({required Key key, required this.title}) : super(key: key);
   final String title;
+  MyHomePage({required this.title});
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -40,7 +41,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final _imagePicker = ImagePicker();
-  File _image;
+  late File _image;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,9 +103,7 @@ class MediaGrid extends StatefulWidget {
 class _MediaGridState extends State<MediaGrid> {
   List<Widget> _mediaList = [];
   int currentPage = 0;
-  int lastPage;
-  Directory _applicationDocumentsDirectory;
-  String _absolutePath;
+  int lastPage = 0;
   @override
   void initState() {
     super.initState();
@@ -139,8 +138,6 @@ class _MediaGridState extends State<MediaGrid> {
   }
 
   _fetchNewMedia() async {
-    _applicationDocumentsDirectory = await getApplicationDocumentsDirectory();
-    print(_applicationDocumentsDirectory.path);
     lastPage = currentPage;
     var permissionGranted = await PhotoManager.requestPermission();
     if (permissionGranted) {
@@ -154,16 +151,14 @@ class _MediaGridState extends State<MediaGrid> {
         temp.add(
             FutureBuilder(
             future: asset.thumbData,
-            // future: asset.thumbDataWithSize(150, 150),
-            builder: (BuildContext context, snapshot) {
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
                 return GestureDetector(
                     onTap: () async {
-                      File file = await asset.file;
+                      File file = (await asset.file)!;
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context) =>
                               FaceDetectionPage(imageFile: file)
-                              // EditChoicePage(selectedImage: Image.file(file))
                       )
                       );
                     },
@@ -206,7 +201,7 @@ class _MediaGridState extends State<MediaGrid> {
     return NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification scroll) {
           _handleScrollEvent(scroll);
-          return;
+          return true;
         },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),

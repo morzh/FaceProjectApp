@@ -17,7 +17,7 @@ List<AssetImage> _editChoiceButtons = [
 
 class EditChoicePage extends StatefulWidget {
   final Image selectedImage;
-  EditChoicePage({@required this.selectedImage}){
+  EditChoicePage({required this.selectedImage}){
     // print(selectedImage);
   }
   @override

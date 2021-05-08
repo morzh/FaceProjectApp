@@ -11,7 +11,7 @@ import 'dart:async';
 class FaceDetectionPage extends StatefulWidget {
   final File imageFile;
 
-  FaceDetectionPage({@required this.imageFile});
+  FaceDetectionPage({required this.imageFile});
 
   @override
   _FaceDetectionPage createState() => _FaceDetectionPage();
@@ -62,7 +62,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
         FaceDetectorOptions(mode: FaceDetectorMode.accurate));
     final List<Face> detectedFaces = await faceDetector.processImage(
         firebaseImage);
-
+    faceDetector.close();
     return detectedFaces;
   }
 

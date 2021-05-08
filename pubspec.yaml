@@ -1,5 +1,5 @@
 name: face_project_app
-description: A new Flutter application.
+description: Face Project application.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -18,16 +18,16 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.7.0"
+  sdk: ">=2.12.0"
 
 dependencies:
   photo_manager: ^1.1.4
   image_picker:  ^0.7.2
   path_provider: ^2.0.0
   photo_view: ^0.11.1
-  firebase_core: ^1.1.0
-  firebase_ml_vision: ^0.10.0
-#  firebase_ml_vision: ^0.12.0
+  firebase_core: ^1.0.0
+#  firebase_ml_vision: ^0.10.0
+  firebase_ml_vision: ^0.12.0
 #  firebase_ml_vision: ^0.9.6+2
   cupertino_icons: ^1.0.2
 #  ui: any
