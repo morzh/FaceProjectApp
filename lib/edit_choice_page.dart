@@ -24,10 +24,7 @@ class EditChoicePage extends StatefulWidget {
   _EditChoicePage createState() => _EditChoicePage();
 }
 
-class _EditChoicePage extends State<EditChoicePage>{
-
-  double _scale = 1.0;
-  double _previousScale = 1.0;
+class _EditChoicePage extends State<EditChoicePage> {
 
   @override
   Widget build(BuildContext context){

@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
-import 'package:face_project_app/edit_choice_page.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'package:face_project_app/face_detection_page.dart';
+import 'package:face_project_app/edit_choice_page.dart';
 
 
 void main() {
@@ -83,8 +84,10 @@ class _MyHomePageState extends State<MyHomePage> {
       _image = imageFile;
     });
     Navigator.push(context, MaterialPageRoute(
-        builder: (context) => EditChoicePage(
-            selectedImage: Image.file(_image)
+        builder: (context) => FaceDetectionPage(
+          imageFile: _image,
+        // builder: (context) => EditChoicePage(
+        //     selectedImage: Image.file(_image)
         )
     )
     );
@@ -159,9 +162,8 @@ class _MediaGridState extends State<MediaGrid> {
                       File file = await asset.file;
                       Navigator.push(context, MaterialPageRoute(
                           builder: (context) =>
-                              EditChoicePage(
-                              selectedImage: Image.file(file)
-                              )
+                              FaceDetectionPage(imageFile: file)
+                              // EditChoicePage(selectedImage: Image.file(file))
                       )
                       );
                     },
