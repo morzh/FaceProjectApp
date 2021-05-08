@@ -10,11 +10,7 @@ import 'dart:async';
 
 class FaceDetectionPage extends StatefulWidget {
   final File imageFile;
-  final faceDetector = FirebaseVision.instance.faceDetector(
-    FaceDetectorOptions(
-      mode: FaceDetectorMode.accurate,
-    )
-  );
+
   FaceDetectionPage({@required this.imageFile});
 
   @override
@@ -22,57 +18,67 @@ class FaceDetectionPage extends StatefulWidget {
 }
 
 class _FaceDetectionPage extends State<FaceDetectionPage> {
-  List<Face> detectedFaces;
   @override
-  Widget build(BuildContext context){
-    detectFaces();
-    return Scaffold(
-      body: Container(
-        child: Image.file(widget.imageFile),
-      ),
+  Widget build(BuildContext context) {
+    return new FutureBuilder(
+        future: Future.wait([detectFaces(), loadUiImage()]),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          return snapshot.hasData ? new Scaffold(
+            body: snapshot.data[0].length == 0
+            ?Center(child: Text(
+                'No faces found',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white54,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 50,
+                )
+              )
+            )
+            :Center(
+              child: FittedBox(
+                child: SizedBox(
+                  width: snapshot.data[1].width.toDouble(),
+                  height:snapshot.data[1].height.toDouble(),
+                  child: CustomPaint(
+                    painter: FacePainter(snapshot.data[1], snapshot.data[0]),
+                  ),
+              ),
+            ),
+          )
+          )
+              :
+          new Center(
+              child: CircularProgressIndicator()
+          );
+        }
     );
   }
 
-  detectFaces() async {
-    final FirebaseVisionImage firebaseImage = FirebaseVisionImage.fromFile(widget.imageFile);
-    detectedFaces = await widget.faceDetector.processImage(firebaseImage);
+  Future detectFaces() async {
+    final FirebaseVisionImage firebaseImage = FirebaseVisionImage.fromFile(
+        widget.imageFile);
+    final faceDetector = FirebaseVision.instance.faceDetector(
+        FaceDetectorOptions(mode: FaceDetectorMode.accurate));
+    final List<Face> detectedFaces = await faceDetector.processImage(
+        firebaseImage);
 
-    for (Face face in detectedFaces) {
-      final Rect boundingBox = face.boundingBox;
-      print(boundingBox);
-
-/*
-      final double rotY = face.headEulerAngleY; // Head is rotated to the right rotY degrees
-      final double rotZ = face.headEulerAngleZ; // Head is tilted sideways rotZ degrees
-
-      // If landmark detection was enabled with FaceDetectorOptions (mouth, ears, eyes, cheeks, and nose available):
-      final FaceLandmark leftEar = face.getLandmark(FaceLandmarkType.leftEar);
-      if (leftEar != null) {
-        final Point<double> leftEarPos = leftEar.position;
-      }
-
-      // If classification was enabled with FaceDetectorOptions:
-      if (face.smilingProbability != null) {
-        final double smileProb = face.smilingProbability;
-      }
-      // If face tracking was enabled with FaceDetectorOptions:
-      if (face.trackingId != null) {
-        final int id = face.trackingId;
-      }
-*/
-    }
-    widget.faceDetector.close();
+    return detectedFaces;
   }
 
+  Future loadUiImage() async {
+    final data = await widget.imageFile.readAsBytes();
+    ui.Image image = await decodeImageFromList(data);
+    return image;
+  }
 }
-
 
 class FacePainter extends CustomPainter {
   final ui.Image image;
-  // final List<Face> faces;
+  final List<Face> faces;
   final List<Rect> rectangles = [];
 
-  FacePainter(this.image, faces) {
+  FacePainter(this.image, this.faces) {
     for (var i = 0; i < faces.length; i++) {
       rectangles.add(faces[i].boundingBox);
     }
@@ -92,5 +98,5 @@ class FacePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(FacePainter oldDelegate) => false;
+  bool shouldRepaint(FacePainter oldDelegate)  => false;
 }
