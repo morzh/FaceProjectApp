@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:face_project_app/edit_choice_page.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as Img;
 
 class FaceDetectionPage extends StatefulWidget {
   final File imageFile;
@@ -97,21 +98,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     return data;
   }
 
-  /*  Uint8List getFaceFromImage(Image image)  {
-      final decodedImage = Img.decodeImage(image.);
 
-      final rectangle = this.boundingBox;
-
-      final face = Img.copyCrop(
-        decodedImage,
-        rectangle.topLeft.dx.toInt(),
-        rectangle.topLeft.dy.toInt(),
-        rectangle.width.toInt(),
-        rectangle.height.toInt(),
-      );
-
-      return Uint8List.fromList(encodePng(face));
-    }*/
 }
 
 
