@@ -5,8 +5,6 @@ import 'package:face_project_app/edit_choice_page.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 
-
-
 class FaceDetectionPage extends StatefulWidget {
   final File imageFile;
 
@@ -51,8 +49,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                               Navigator.push(context, MaterialPageRoute(
                                   builder: (context) =>
                                       EditChoicePage(
-                                          selectedImage: Image.memory(snapshot.data[1],
-                                          )
+                                          selectedImage: Image.memory(snapshot.data[1])
                                       )
                               )
                               );
@@ -90,28 +87,6 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
         firebaseImage);
     faceDetector.close();
 
-/*
-    for (var face in detectedFaces) {
-      Widget object = Positioned(
-        top: face.boundingBox.top,
-        left: face.boundingBox.left,
-        width: face.boundingBox.width,
-        height: face.boundingBox.height,
-          child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-                width: 8,
-            color: Colors.blueAccent),
-          ),
-          ),
-        );
-
-      objects.add(object);
-    }
-
-    return objects;
-*/
   return detectedFaces;
   }
 
@@ -121,4 +96,22 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     // return image;
     return data;
   }
+
+  /*  Uint8List getFaceFromImage(Image image)  {
+      final decodedImage = Img.decodeImage(image.);
+
+      final rectangle = this.boundingBox;
+
+      final face = Img.copyCrop(
+        decodedImage,
+        rectangle.topLeft.dx.toInt(),
+        rectangle.topLeft.dy.toInt(),
+        rectangle.width.toInt(),
+        rectangle.height.toInt(),
+      );
+
+      return Uint8List.fromList(encodePng(face));
+    }*/
 }
+
+
