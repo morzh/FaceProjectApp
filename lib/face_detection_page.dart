@@ -38,7 +38,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                   width: snapshot.data[1].width.toDouble(),
                   height:snapshot.data[1].height.toDouble(),
                   child: CustomPaint(
-                    painter: FacePainter(snapshot.data[1], snapshot.data[0]),
+                    painter: FacesPainter(snapshot.data[1], snapshot.data[0]),
                   ),
               ),
             ),
@@ -70,12 +70,12 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 }
 
-class FacePainter extends CustomPainter {
+class FacesPainter extends CustomPainter {
   final ui.Image image;
   final List<Face> faces;
   final List<Rect> rectangles = [];
 
-  FacePainter(this.image, this.faces) {
+  FacesPainter(this.image, this.faces) {
     for (var i = 0; i < faces.length; i++) {
       rectangles.add(faces[i].boundingBox);
     }
@@ -85,7 +85,7 @@ class FacePainter extends CustomPainter {
   void paint(ui.Canvas canvas, ui.Size size) {
     final Paint paint = Paint()
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 15.0
+      ..strokeWidth = (size.height + size.width) / 200
       ..color = Colors.blue;
 
     canvas.drawImage(image, Offset.zero, Paint());
@@ -95,5 +95,5 @@ class FacePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(FacePainter oldDelegate)  => false;
+  bool shouldRepaint(FacesPainter oldDelegate)  => false;
 }
