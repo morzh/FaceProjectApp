@@ -1,9 +1,11 @@
+import 'dart:io';
+import 'dart:async';
+
+import 'package:face_project_app/edit_choice_page.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 
-import 'dart:io';
-import 'dart:ui' as ui;
-import 'dart:async';
+
 
 class FaceDetectionPage extends StatefulWidget {
   final File imageFile;
@@ -18,7 +20,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   @override
   Widget build(BuildContext context) {
     return new FutureBuilder(
-        future: Future.wait([detectFaces(), loadUiImage()]),
+        future: Future.wait([detectFaces(), loadImage()]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return snapshot.hasData ? new Scaffold(
             body: snapshot.data[0].length == 0
@@ -34,17 +36,43 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
             )
             :Center(
               child: FittedBox(
-                child: SizedBox(
-                  width: snapshot.data[1].width.toDouble(),
-                  height:snapshot.data[1].height.toDouble(),
-                  child: CustomPaint(
-                    painter: FacesPainter(snapshot.data[1], snapshot.data[0]),
-                  ),
+              fit: BoxFit.fitWidth,
+                child: Stack(
+                  children: <Widget>[
+                    Image.memory(snapshot.data[1]),
+                    for (var face in snapshot.data[0] )
+                      Positioned(
+                        top: face.boundingBox.top,
+                        left: face.boundingBox.left,
+                        width: face.boundingBox.width,
+                        height: face.boundingBox.height,
+                        child: GestureDetector(
+                            onTap: () async {
+                              Navigator.push(context, MaterialPageRoute(
+                                  builder: (context) =>
+                                      EditChoicePage(
+                                          selectedImage: Image.memory(snapshot.data[1],
+                                          )
+                                      )
+                              )
+                              );
+                            },
+                          child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                                width: 8,
+                                color: Colors.blueAccent),
+                          ),
+                        ),
+                      ),
+                      )
+                  ],
+                ),
               ),
             ),
           )
-          )
-              :
+            :
           new Center(
               child: CircularProgressIndicator()
           );
@@ -53,6 +81,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   Future detectFaces() async {
+    List<Widget> objects = [];
     final FirebaseVisionImage firebaseImage = FirebaseVisionImage.fromFile(
         widget.imageFile);
     final faceDetector = FirebaseVision.instance.faceDetector(
@@ -60,40 +89,36 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     final List<Face> detectedFaces = await faceDetector.processImage(
         firebaseImage);
     faceDetector.close();
-    return detectedFaces;
+
+/*
+    for (var face in detectedFaces) {
+      Widget object = Positioned(
+        top: face.boundingBox.top,
+        left: face.boundingBox.left,
+        width: face.boundingBox.width,
+        height: face.boundingBox.height,
+          child: DecoratedBox(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+                width: 8,
+            color: Colors.blueAccent),
+          ),
+          ),
+        );
+
+      objects.add(object);
+    }
+
+    return objects;
+*/
+  return detectedFaces;
   }
 
-  Future loadUiImage() async {
+  Future loadImage() async {
     final data = await widget.imageFile.readAsBytes();
-    ui.Image image = await decodeImageFromList(data);
-    return image;
+    // Image image = Image.memory(data);
+    // return image;
+    return data;
   }
-}
-
-class FacesPainter extends CustomPainter {
-  final ui.Image image;
-  final List<Face> faces;
-  final List<Rect> rectangles = [];
-
-  FacesPainter(this.image, this.faces) {
-    for (var i = 0; i < faces.length; i++) {
-      rectangles.add(faces[i].boundingBox);
-    }
-  }
-
-  @override
-  void paint(ui.Canvas canvas, ui.Size size) {
-    final Paint paint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = (size.height + size.width) / 200
-      ..color = Colors.blue;
-
-    canvas.drawImage(image, Offset.zero, Paint());
-    for (var i = 0; i < rectangles.length; i++) {
-      canvas.drawRect(rectangles[i], paint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(FacesPainter oldDelegate)  => false;
 }
