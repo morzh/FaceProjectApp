@@ -3,8 +3,10 @@ import 'dart:async';
 
 import 'package:face_project_app/edit_choice_page.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+// import 'package:opencv/opencv.dart';
+// import 'package:opencv/core/core.dart';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as Img;
+import 'package:image_editor/image_editor.dart';
 
 class FaceDetectionPage extends StatefulWidget {
   final File imageFile;
@@ -34,38 +36,43 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
               )
             )
             :Center(
-              child: FittedBox(
-              fit: BoxFit.fitWidth,
-                child: Stack(
-                  children: <Widget>[
-                    Image.memory(snapshot.data[1]),
-                    for (var face in snapshot.data[0] )
-                      Positioned(
-                        top: face.boundingBox.top,
-                        left: face.boundingBox.left,
-                        width: face.boundingBox.width,
-                        height: face.boundingBox.height,
-                        child: GestureDetector(
-                            onTap: () async {
-                              Navigator.push(context, MaterialPageRoute(
-                                  builder: (context) =>
-                                      EditChoicePage(
-                                          selectedImage: Image.memory(snapshot.data[1])
-                                      )
-                              )
-                              );
-                            },
-                          child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                                width: 8,
-                                color: Colors.blueAccent),
+              child: GestureDetector(
+                child: SizedBox.expand(
+                  child: FittedBox(
+                  fit: BoxFit.contain,
+                    child: Stack(
+                      children: <Widget>[
+                        Image.memory(snapshot.data[1]),
+                        for (var face in snapshot.data[0] )
+                          Positioned(
+                            top: face.boundingBox.top,
+                            left: face.boundingBox.left,
+                            width: face.boundingBox.width,
+                            height: face.boundingBox.height,
+                            child: GestureDetector(
+                                onTap: () async {
+                                  final data = (await _cropImage(snapshot.data[1], face.boundingBox))!;
+                                  Navigator.push(context, MaterialPageRoute(
+                                      builder: (context) =>
+                                          EditChoicePage(
+                                              selectedImage: Image.memory(data)
+                                          )
+                                  )
+                                  );
+                                },
+                              child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(
+                                    width: 8,
+                                    color: Colors.blueAccent),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      )
-                  ],
+                          )
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -76,6 +83,14 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
           );
         }
     );
+  }
+
+  Future _cropImage(imageData, Rect rect) async {
+    final editorOption = ImageEditorOption();
+    editorOption.addOption(ClipOption(x: rect.left, y: rect.top, width: rect.width, height : rect.height));
+    return ImageEditor.editImage(
+        image: imageData,
+        imageEditorOption: editorOption);
   }
 
   Future detectFaces() async {
