@@ -6,11 +6,11 @@ List<AssetImage> _editChoiceButtons = [
   AssetImage('assets/buttons_images/head_left_right.png'),
   AssetImage('assets/buttons_images/head_up_down.png'),
   AssetImage('assets/buttons_images/head_old_young.png'),
+  AssetImage('assets/buttons_images/head_expression.png'),
   AssetImage('assets/buttons_images/head_male_female.png'),
   AssetImage('assets/buttons_images/head_glasses.png'),
   AssetImage('assets/buttons_images/head_beard.png'),
   AssetImage('assets/buttons_images/head_bald_hairy.png'),
-  AssetImage('assets/buttons_images/male-female.png'),
   AssetImage('assets/buttons_images/save.png'),
   AssetImage('assets/buttons_images/share.png'),
 ];

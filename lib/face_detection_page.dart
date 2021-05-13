@@ -10,7 +10,6 @@ import 'package:image_editor/image_editor.dart';
 
 class FaceDetectionPage extends StatefulWidget {
   final File imageFile;
-
   FaceDetectionPage({required this.imageFile});
 
   @override
@@ -18,6 +17,8 @@ class FaceDetectionPage extends StatefulWidget {
 }
 
 class _FaceDetectionPage extends State<FaceDetectionPage> {
+  final faceDetector = FirebaseVision.instance.faceDetector(
+      FaceDetectorOptions(mode: FaceDetectorMode.accurate));
   @override
   Widget build(BuildContext context) {
     return new FutureBuilder(
@@ -94,22 +95,18 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   Future detectFaces() async {
-    List<Widget> objects = [];
     final FirebaseVisionImage firebaseImage = FirebaseVisionImage.fromFile(
         widget.imageFile);
-    final faceDetector = FirebaseVision.instance.faceDetector(
-        FaceDetectorOptions(mode: FaceDetectorMode.accurate));
+
     final List<Face> detectedFaces = await faceDetector.processImage(
         firebaseImage);
-    faceDetector.close();
+    // faceDetector.close();
 
   return detectedFaces;
   }
 
   Future loadImage() async {
     final data = await widget.imageFile.readAsBytes();
-    // Image image = Image.memory(data);
-    // return image;
     return data;
   }
 
