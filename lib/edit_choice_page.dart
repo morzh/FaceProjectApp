@@ -73,7 +73,7 @@ class _EditChoicePage extends State<EditChoicePage> {
                       )
                     ),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(5, 5, 5, 5),
+                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                       child: Table(
                         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                         children: [
