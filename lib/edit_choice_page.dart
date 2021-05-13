@@ -25,11 +25,11 @@ class EditChoicePage extends StatefulWidget {
 }
 
 class _EditChoicePage extends State<EditChoicePage> {
-  int _widget_idx = 0;
+  int _widgetIndex = 0;
   double _sliderValue = 0.0;
 
   void _update(int idx) {
-    setState(() => _widget_idx = idx);
+    setState(() => _widgetIndex = idx);
   }
 
 
@@ -46,7 +46,9 @@ class _EditChoicePage extends State<EditChoicePage> {
                     )
                 ),
                 ),
-            IndexedStack(children: <Widget>[
+            IndexedStack(
+              index: _widgetIndex,
+                children: <Widget>[
               EditChoice(update: _update),
               Container(
                 child: Column(
@@ -69,12 +71,19 @@ class _EditChoicePage extends State<EditChoicePage> {
                               )
                             ]
                           ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                      child: Table(
+                        children: [
                           TableRow(
-                            children: [
-                              Text('Cancel'),
-                              Text('Reset'),
-                              Text('Accept')
-                            ]
+                              children: [
+                                Text('Cancel'),
+                                Text('Reset'),
+                                Text('Accept')
+                              ]
                           )
                         ],
                       ),
@@ -114,7 +123,7 @@ class EditChoice extends StatelessWidget {
                 TableRow(
                   children: [
                     TextButton(
-                      onPressed: (){},
+                      onPressed: () => update(1),
                         child: Image(image: _editChoiceButtons[0])
                     ),
                     Image(image: _editChoiceButtons[1]),
