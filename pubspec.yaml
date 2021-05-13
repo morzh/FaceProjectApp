@@ -71,6 +71,7 @@ flutter:
     - assets/buttons_images/head_beard.png
     - assets/buttons_images/head_bald_hairy.png
     - assets/buttons_images/save.png
+    - assets/buttons_images/share.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
