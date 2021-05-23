@@ -45,7 +45,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                   minScale: 0.45,
                   maxScale: 3.0,
                   child: FittedBox(
-                  fit: BoxFit.contain,
+                  fit: BoxFit.cover,
                     child: Stack(
                       children: <Widget>[
                         Image.memory(snapshot.data[1]),
