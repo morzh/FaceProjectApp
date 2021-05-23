@@ -1,10 +1,11 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:typed_data';
+import 'dart:math';
 
+import 'package:path_provider/path_provider.dart';
 import 'package:face_project_app/edit_choice_page.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
-// import 'package:opencv/opencv.dart';
-// import 'package:opencv/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:image_editor/image_editor.dart';
 
@@ -19,6 +20,9 @@ class FaceDetectionPage extends StatefulWidget {
 class _FaceDetectionPage extends State<FaceDetectionPage> {
   final faceDetector = FirebaseVision.instance.faceDetector(
       FaceDetectorOptions(mode: FaceDetectorMode.accurate));
+  late File _fileBBoxFace;
+  final _rng = Random();
+
   @override
   Widget build(BuildContext context) {
     return new FutureBuilder(
@@ -37,8 +41,9 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
               )
             )
             :Center(
-              child: GestureDetector(
-                child: SizedBox.expand(
+              child: InteractiveViewer(
+                  minScale: 0.45,
+                  maxScale: 3.0,
                   child: FittedBox(
                   fit: BoxFit.contain,
                     child: Stack(
@@ -52,11 +57,19 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                             height: face.boundingBox.height,
                             child: GestureDetector(
                                 onTap: () async {
-                                  final data = (await _cropImage(snapshot.data[1], face.boundingBox))!;
-                                  Navigator.push(context, MaterialPageRoute(
+                                    final String random = (_rng.nextInt(1000000)).toString();
+                                    final Uint8List data = await _cropImage(snapshot.data[1], face.boundingBox);
+                                    final String tempPath = (await getTemporaryDirectory()).path;
+                                    final File dataFile = File('$tempPath/$random.jpg');
+                                    // final File dataFile = File('$tempPath/tempFaceImage.jpg');
+                                    if (dataFile.existsSync()) { dataFile.deleteSync(); }
+                                    dataFile.writeAsBytesSync(data);
+                                    // print(dataFile.path);
+                                    // print( await dataFile.length());
+                                    Navigator.push(context, MaterialPageRoute(
                                       builder: (context) =>
                                           EditChoicePage(
-                                              selectedImage: Image.memory(data)
+                                              imageFile: dataFile
                                           )
                                   )
                                   );
@@ -76,7 +89,6 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                   ),
                 ),
               ),
-            ),
           )
             :
           new Center(

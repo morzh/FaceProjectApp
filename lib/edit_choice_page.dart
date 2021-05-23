@@ -1,5 +1,20 @@
+import 'dart:async';
+import 'dart:typed_data';
+import 'dart:io';
+import 'dart:ui';
+import 'package:flutter/cupertino.dart';
+import 'package:path_provider/path_provider.dart';
+
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:share_extend/share_extend.dart';
+import 'package:gallery_saver/gallery_saver.dart';
+import 'animated_index_stack.dart';
+
+
+class ImageUtils {
+
+}
 
 
 List<AssetImage> _editChoiceButtons = [
@@ -16,8 +31,8 @@ List<AssetImage> _editChoiceButtons = [
 ];
 
 class EditChoicePage extends StatefulWidget {
-  final Image selectedImage;
-  EditChoicePage({required this.selectedImage}){
+  File imageFile;
+  EditChoicePage({required this.imageFile}){
     // print(selectedImage);
   }
   @override
@@ -28,10 +43,14 @@ class _EditChoicePage extends State<EditChoicePage> {
   int _widgetIndex = 0;
   double _sliderValue = 0.0;
 
-  void _update(int idx) {
+  void _updateWidgetIndex(int idx) {
     setState(() => _widgetIndex = idx);
   }
-
+  void _updateSliderValue(double value) { setState(() => _sliderValue = value); }
+  double _getSliderValue() { return _sliderValue; }
+  Future<File> _getSelectedImage() async {
+    return widget.imageFile;
+  }
 
   @override
   Widget build(BuildContext context){
@@ -40,90 +59,24 @@ class _EditChoicePage extends State<EditChoicePage> {
         child: Column(
           children: <Widget>[
             Expanded(
-                child: Container(
-                    child: PhotoView(
-                      imageProvider: widget.selectedImage.image,
-                    )
-                ),
-                ),
-            IndexedStack(
-              index: _widgetIndex,
-                children: <Widget>[
-              EditChoice(update: _update),
-              Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.white12
-                ),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                      child: Slider(
-                          value: _sliderValue,
-                          activeColor: Colors.white60,
-                          inactiveColor: Colors.white12,
-                          onChanged: (newRatio){
-                            setState(() {
-                              _sliderValue = newRatio;
-                            });
-                          },
-                          min: 0.0,
-                          max: 1.0
-                      )
-                    ),
-                    Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                      child: Table(
-                        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                        children: [
-                          TableRow(
-                              children: [
-                                TextButton(
-                                  onPressed: () => _update(0),
-                                  child: Text(
-                                    'Cancel',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white60,
-                                    ),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () => setState(() {
-                                    _sliderValue = 0.0;
-                                  }),
-                                  child: Text(
-                                    'Reset',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white60,
-                                    ),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () => _update(0),
-                                  child: Text(
-                                    'Accept',
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.white60,
-                                    ),
-                                  ),
-                                )
-                              ]
-                          )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              )
-            ]
+                child: PhotoView(
+                  imageProvider: Image.file(widget.imageFile).image,
+                )
             ),
+            AnimatedIndexedStack(
+                  index: _widgetIndex,
+                  // alignment: Alignment.bottomCenter,
+                  children: <Widget>[
+                EditChoice(
+                    updatewidgetIndex: _updateWidgetIndex,
+                    getImageFile: _getSelectedImage,
+                ),
+                EditWithSlider(
+                  updateWidgetIndex: _updateWidgetIndex,
+                  updateSliderValue: _updateSliderValue,
+                  getSliderValue: _getSliderValue,),
+              ]
+              ),
           ],
         ),
       ),
@@ -131,90 +84,200 @@ class _EditChoicePage extends State<EditChoicePage> {
   }
 }
 
-class EditChoice extends StatelessWidget {
-  final ValueChanged<int> update;
+class EditWithSlider extends StatelessWidget {
+  final ValueChanged<double> updateSliderValue;
+  final ValueChanged<int> updateWidgetIndex;
+  final ValueGetter<double> getSliderValue;
+  final double _sliderValue = 0.0;
 
-  const EditChoice({required this.update,  Key? key, }) : super(key: key);
+  const EditWithSlider ({
+    required this.updateSliderValue,
+    required this.updateWidgetIndex,
+    required this.getSliderValue,
+    Key? key, }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        // height: 280,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white12
-        ),
-        child: Column(
+    return  Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        color: Colors.white12
+      ),
+      child: Column(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                child: Slider(
+                  value: getSliderValue(),
+                  activeColor: Colors.white60,
+                  inactiveColor: Colors.white12,
+                  onChanged: (newRatio) => updateSliderValue(newRatio),
+                  min: 0.0,
+                  max: 1.0,
+                )
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: Table(
-                defaultColumnWidth: FixedColumnWidth(80),
+                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                 children: [
                   TableRow(
-                    children: [
-                      TextButton(
-                        onPressed: () => update(1),
-                          child: Image(image: _editChoiceButtons[0])
-                      ),
-                      TextButton(
-                          onPressed: () => update(1),
-                          child: Image(image: _editChoiceButtons[1])
-                      ),
-                      TextButton(
-                          onPressed: () => update(1),
-                          child: Image(image: _editChoiceButtons[2])
-                      ),
-                      TextButton(
-                          onPressed: () => update(1),
-                          child: Image(image: _editChoiceButtons[3])
-                      )
+                      children: [
+                        TextButton(
+                          onPressed: () => updateWidgetIndex(0),
+                          child: Text(
+                            'Cancel',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white60,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => updateSliderValue(0.0),
+                          child: Text(
+                            'Reset',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white60,
+                            ),
+                          ),
+                        ),
+                        TextButton(
+                          onPressed: () => updateWidgetIndex(0),
+                          child: Text(
+                            'Accept',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white60,
+                            ),
+                          ),
+                        )
                       ]
-                  ),
-                  TableRow(
-                    children: [
-                      TextButton(
-                          onPressed: () => update(1),
-                          child: Image(image: _editChoiceButtons[4])
-                      ),
-                      TextButton(
-                          onPressed: () => update(1),
-                          child: Image(image: _editChoiceButtons[5])
-                      ),
-                      TextButton(
-                          onPressed: () => update(1),
-                          child: Image(image: _editChoiceButtons[6])
-                      ),
-                      TextButton(
-                          onPressed: () => update(1),
-                          child: Image(image: _editChoiceButtons[7])
-                      ),
+                  )
+                ],
+              ),
+            )
+          ],
+      ),
+    );
+  }
+}
+
+class EditChoice extends StatelessWidget {
+  final ValueChanged<int> updatewidgetIndex;
+  final ValueGetter<Future<File>> getImageFile;
+
+  const EditChoice({
+    required this.updatewidgetIndex,
+    required this.getImageFile,
+    Key? key, }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        color: Colors.white12
+      ),
+      child: Column(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Table(
+                  defaultColumnWidth: FixedColumnWidth(80),
+                  children: [
+                    TableRow(
+                      children: [
+                        TextButton(
+                          onPressed: () => updatewidgetIndex(1),
+                            child: Image(image: _editChoiceButtons[0])
+                        ),
+                        TextButton(
+                            onPressed: () => updatewidgetIndex(1),
+                            child: Image(image: _editChoiceButtons[1])
+                        ),
+                        TextButton(
+                            onPressed: () => updatewidgetIndex(1),
+                            child: Image(image: _editChoiceButtons[2])
+                        ),
+                        TextButton(
+                            onPressed: () => updatewidgetIndex(1),
+                            child: Image(image: _editChoiceButtons[3])
+                        )
+                        ]
+                    ),
+                    TableRow(
+                      children: [
+                        TextButton(
+                            onPressed: () => updatewidgetIndex(1),
+                            child: Image(image: _editChoiceButtons[4])
+                        ),
+                        TextButton(
+                            onPressed: () => updatewidgetIndex(1),
+                            child: Image(image: _editChoiceButtons[5])
+                        ),
+                        TextButton(
+                            onPressed: () => updatewidgetIndex(1),
+                            child: Image(image: _editChoiceButtons[6])
+                        ),
+                        TextButton(
+                            onPressed: () => updatewidgetIndex(1),
+                            child: Image(image: _editChoiceButtons[7])
+                        ),
+                      ]
+                    )
+                  ],
+                )
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                child: Table(
+                    defaultColumnWidth: FixedColumnWidth(80),
+                  children: [
+                    TableRow(
+                      children: [
+                        TextButton(
+                            onPressed: () async {
+                              final File imageFile = await getImageFile();
+                              await GallerySaver.saveImage(imageFile.path);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Image saved',
+                                      style: TextStyle(
+                                        color: Colors.white54,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    backgroundColor: Colors.black45,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(Radius.circular(25))
+                                    ),
+                                    behavior: SnackBarBehavior.floating,
+                                    width: 200,
+                                  )
+                              );
+                            },
+                            child: Image(image: _editChoiceButtons[8])
+                        ),
+                        TextButton(
+                            onPressed: () async {
+                              final File imageFile = await getImageFile();
+                              ShareExtend.share(imageFile.path, "file");
+                            },
+                            child: Image(image: _editChoiceButtons[9])),
                     ]
                   )
                 ],
-              )
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-              child: Table(
-                  defaultColumnWidth: FixedColumnWidth(80),
-                children: [
-                  TableRow(
-                    children: [
-                      TextButton(
-                          onPressed: () => update(1),
-                          child: Image(image: _editChoiceButtons[8])),
-                      TextButton(
-                          onPressed: () => update(1),
-                          child: Image(image: _editChoiceButtons[9])),
-                  ]
-                )
-              ],
-            ),
-          )
-          ],
-        ),
+              ),
+            )
+            ],
       ),
     );
   }
