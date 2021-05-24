@@ -17,6 +17,7 @@ dependencies:
   image_editor: ^1.0.0
   share_extend: ^2.0.0
   cupertino_icons: ^1.0.2
+  vector_math: ^2.1.0
   gallery_saver:
     git:
       https://github.com/shofizone/gallery_saver.git

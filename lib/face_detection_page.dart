@@ -44,17 +44,16 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
               child: InteractiveViewer(
                   minScale: 0.45,
                   maxScale: 3.0,
-                  child: FittedBox(
-                  fit: BoxFit.cover,
                     child: Stack(
+                      fit: StackFit.expand,
                       children: <Widget>[
                         Image.memory(snapshot.data[1]),
                         for (var face in snapshot.data[0] )
                           Positioned(
-                            top: face.boundingBox.top,
-                            left: face.boundingBox.left,
-                            width: face.boundingBox.width,
-                            height: face.boundingBox.height,
+                            top: 0.41*face.boundingBox.top,
+                            left: 0.41*face.boundingBox.left,
+                            width: 0.41*face.boundingBox.width,
+                            height: 0.41*face.boundingBox.height,
                             child: GestureDetector(
                                 onTap: () async {
                                     final String random = (_rng.nextInt(1000000)).toString();
@@ -76,9 +75,9 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                                 },
                               child: DecoratedBox(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(0.01*MediaQuery.of(context).size.longestSide),
                                 border: Border.all(
-                                    width: 8,
+                                    width: 0.003*MediaQuery.of(context).size.longestSide,
                                     color: Colors.blueAccent),
                               ),
                             ),
@@ -88,7 +87,6 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                     ),
                   ),
                 ),
-              ),
           )
             :
           new Center(
