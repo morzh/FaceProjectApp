@@ -165,11 +165,18 @@ class _MediaGridState extends State<MediaGrid> {
                     child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          boxShadow: [BoxShadow(
-                            color: Colors.black.withOpacity(0.8),
-                            spreadRadius: 2,
-                            blurRadius: 5,
-                            offset: Offset(2, 2),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.white.withOpacity(0.3),
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: Offset(-2, -2),
+                          ),
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.8),
+                              spreadRadius: 1,
+                              blurRadius: 5,
+                              offset: Offset(2, 2),
                           ),
                           ],
                           image: DecorationImage(
