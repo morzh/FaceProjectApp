@@ -21,6 +21,7 @@ dependencies:
   gallery_saver:
     git:
       https://github.com/shofizone/gallery_saver.git
+  image_size_getter: ^1.0.0
   flutter:
     sdk: flutter
 
