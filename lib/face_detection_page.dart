@@ -1,7 +1,8 @@
 import 'dart:io';
 import 'dart:async';
-import 'dart:typed_data';
 import 'dart:math';
+import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:path_provider/path_provider.dart';
 import 'package:face_project_app/edit_choice_page.dart';
@@ -19,9 +20,10 @@ class FaceDetectionPage extends StatefulWidget {
 
 class _FaceDetectionPage extends State<FaceDetectionPage> {
   final faceDetector = FirebaseVision.instance.faceDetector(
-      FaceDetectorOptions(mode: FaceDetectorMode.accurate));
+      FaceDetectorOptions(mode: FaceDetectorMode.fast));
   late File _fileBBoxFace;
   final _rng = Random();
+  late ui.Image image;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,8 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return snapshot.hasData ? new Scaffold(
             body: snapshot.data[0].length == 0
-            ?Center(child: Text(
+            ?
+            Center(child: Text(
                 'No faces found',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -40,7 +43,26 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                 )
               )
             )
-            :Center(
+            :
+                  InteractiveViewer(
+                    minScale: 0.25,
+                    maxScale: 3.0,
+                    child: FittedBox(
+                      child: SizedBox(
+                        width: snapshot.data[1].width.toDouble(),
+                        height: snapshot.data[1].height.toDouble(),
+                        child: CustomPaint(
+                          painter: MyPainter(
+                            image: snapshot.data[1],
+                            faces: snapshot.data[0],
+                            ),
+
+                        ),
+                      ),
+                    ),
+                  ),
+                // ),
+/*            Center(
               child: InteractiveViewer(
                   minScale: 0.45,
                   maxScale: 3.0,
@@ -50,10 +72,10 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                         Image.memory(snapshot.data[1]),
                         for (var face in snapshot.data[0] )
                           Positioned(
-                            top: 0.41*face.boundingBox.top,
-                            left: 0.41*face.boundingBox.left,
-                            width: 0.41*face.boundingBox.width,
-                            height: 0.41*face.boundingBox.height,
+                            top: face.boundingBox.top,
+                            left: face.boundingBox.left,
+                            width: face.boundingBox.width,
+                            height: face.boundingBox.height,
                             child: GestureDetector(
                                 onTap: () async {
                                     final String random = (_rng.nextInt(1000000)).toString();
@@ -86,7 +108,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                       ],
                     ),
                   ),
-                ),
+                ),*/
           )
             :
           new Center(
@@ -117,10 +139,44 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
 
   Future loadImage() async {
     final data = await widget.imageFile.readAsBytes();
-    return data;
+    final image = await decodeImageFromList(data);
+    return image;
   }
 
 
 }
 
+class MyPainter extends CustomPainter{
+  List<Face> faces;
+  ui.Image image;
+
+  MyPainter({required this.image, required this.faces});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    // loadImage();
+    final paint = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 8.0
+      ..color = Colors.indigo;
+
+    canvas.drawImage(image, Offset.zero, paint);
+    for (var face in faces) {
+      final rect = Rect.fromLTWH(
+          face.boundingBox.left,
+          face.boundingBox.top,
+          face.boundingBox.width,
+          face.boundingBox.height
+      );
+      final radius = Radius.circular(32);
+      canvas.drawRRect(RRect.fromRectAndRadius(rect, radius), paint);
+    }
+
+  }
+  @override
+  bool shouldRepaint(CustomPainter old)  {
+    print('sdfsdg')
+    return false;
+  };
+}
 
