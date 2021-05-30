@@ -189,7 +189,7 @@ class _MediaGridState extends State<MediaGrid> {
               } else {
                 return Icon(Icons.image_rounded);
               }
-            return Container();
+            // return Container();
               }
           )
         );

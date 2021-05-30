@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:typed_data';
+// import 'dart:typed_data';
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -88,7 +88,7 @@ class EditWithSlider extends StatelessWidget {
   final ValueChanged<double> updateSliderValue;
   final ValueChanged<int> updateWidgetIndex;
   final ValueGetter<double> getSliderValue;
-  final double _sliderValue = 0.0;
+  // final double _sliderValue = 0.0;
 
   const EditWithSlider ({
     required this.updateSliderValue,

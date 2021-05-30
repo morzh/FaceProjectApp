@@ -9,19 +9,19 @@ import 'package:face_project_app/edit_choice_page.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:image_editor/image_editor.dart';
-import 'package:image_size_getter/image_size_getter.dart';
-import 'package:image_size_getter/file_input.dart';
 
 
 class ImageStruct {
   Uint8List imageData;
   double imageWidth;
   double imageHeight;
+  List<Face> filteredFaces;
 
   ImageStruct({
     required this.imageData,
     required this.imageWidth,
-    required this.imageHeight
+    required this.imageHeight,
+    required this.filteredFaces,
   });
 }
 
@@ -42,11 +42,11 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   @override
   Widget build(BuildContext context) {
     return new FutureBuilder(
-        future: Future.wait([detectFaces(), loadImage()]/*, getIamgeSize()]*/),
+        future: Future.wait([_loadData()]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
 
           return snapshot.hasData ? new Scaffold(
-            body: snapshot.data[0].length == 0
+            body: snapshot.data.length == 0
             ?Center(child: Text(
                 'No faces found',
                 textAlign: TextAlign.center,
@@ -64,19 +64,19 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                       fit: StackFit.expand,
                       children: <Widget>[
                         Image.memory(
-                            snapshot.data[1].imageData,
+                            snapshot.data[0].imageData,
                           alignment: Alignment.topLeft,
                         ),
-                        for (var face in snapshot.data[0])
+                        for (var face in snapshot.data[0].filteredFaces)
                           Positioned(
-                            top: (MediaQuery.of(context).size.width / snapshot.data[1].imageWidth).clamp(0.01, 1.0) * face.boundingBox.top,
-                            left: (MediaQuery.of(context).size.width / snapshot.data[1].imageWidth).clamp(0.01, 1.0) * face.boundingBox.left,
-                            width: (MediaQuery.of(context).size.width / snapshot.data[1].imageWidth).clamp(0.01, 1.0) * face.boundingBox.width,
-                            height: (MediaQuery.of(context).size.width / snapshot.data[1].imageWidth).clamp(0.01, 1.0)  * face.boundingBox.height,
+                            top: (MediaQuery.of(context).size.width / snapshot.data[0].imageWidth).clamp(0.01, 1.0) * face.boundingBox.top,
+                            left: (MediaQuery.of(context).size.width / snapshot.data[0].imageWidth).clamp(0.01, 1.0) * face.boundingBox.left,
+                            width: (MediaQuery.of(context).size.width / snapshot.data[0].imageWidth).clamp(0.01, 1.0) * face.boundingBox.width,
+                            height: (MediaQuery.of(context).size.width / snapshot.data[0].imageWidth).clamp(0.01, 1.0)  * face.boundingBox.height,
                             child: GestureDetector(
                                 onTap: () async {
                                     final String random = (_rng.nextInt(1000000)).toString();
-                                    final Uint8List data = await _cropImage(snapshot.data[1], face.boundingBox);
+                                    final Uint8List data = await _cropImage(snapshot.data[0].imageData, face.boundingBox);
                                     final String tempPath = (await getTemporaryDirectory()).path;
                                     final File dataFile = File('$tempPath/$random.jpg');
                                     if (dataFile.existsSync()) { dataFile.deleteSync(); }
@@ -91,13 +91,11 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                                   )
                                   );
                                 },
-                              child: DecoratedBox(
+                              child: Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                                // borderRadius: BorderRadius.circular(0.01*MediaQuery.of(context).size.longestSide),
+                                borderRadius: BorderRadius.circular(0.015*MediaQuery.of(context).size.longestSide),
                                 border: Border.all(
-                                    width: 10,
-                                    // width: 0.03*MediaQuery.of(context).size.longestSide,
+                                    width: 0.006*MediaQuery.of(context).size.longestSide,
                                     color: Colors.blueAccent),
                               ),
                             ),
@@ -135,29 +133,30 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
       }
       filteredFaces.add(face);
     }
-  // return detectedFaces;
   return filteredFaces;
   }
 
-  Future getIamgeSize() async {
-    final memoryImageSize = ImageSizeGetter.getSize(FileInput(widget.imageFile));
-    return memoryImageSize.width;
-  }
-
-  Future loadImage() async {
-    // print('image width is:');
+  Future _loadData() async {
     final imageData = await widget.imageFile.readAsBytes();
-    final imageSize = ImageSizeGetter.getSize(MemoryInput(imageData));
-    // final image = Image.memory(
-    //     data,
-    //     width: memoryImageSize.width.toDouble(),
-    //     height: memoryImageSize.height.toDouble(),
-    //   );
-    // print(memoryImageSize);
+    final decodedImage = await decodeImageFromList(imageData);
+    final imageSize = Size(decodedImage.width.toDouble(), decodedImage.height.toDouble());
+    final FirebaseVisionImage firebaseImage = FirebaseVisionImage.fromFile(widget.imageFile);
+    final List<Face> detectedFaces = await faceDetector.processImage(firebaseImage);
+    // faceDetector.close();
+    final List<Face> filteredFaces = [];
+    for (var face in detectedFaces) {
+      if (face.boundingBox.longestSide / face.boundingBox.shortestSide > 2) {
+        continue;
+      }
+      filteredFaces.add(face);
+    }
+
+    print(filteredFaces[0].boundingBox);
     return ImageStruct(
-        imageData: imageData,
-        imageWidth: imageSize.width.toDouble(),
-        imageHeight: imageSize.height.toDouble()
+      imageData: imageData,
+      imageWidth: imageSize.width.toDouble(),
+      imageHeight: imageSize.height.toDouble(),
+      filteredFaces: filteredFaces
     );
   }
 }
