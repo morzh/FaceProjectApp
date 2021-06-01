@@ -9,7 +9,6 @@ import 'package:face_project_app/edit_choice_page.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:image_editor/image_editor.dart';
-import 'package:exif/exif.dart';
 
 
 class ImageStruct {
@@ -17,12 +16,14 @@ class ImageStruct {
   double imageWidth;
   double imageHeight;
   double scale;
+  Offset offset;
 
   ImageStruct({
     required this.imageData,
     required this.imageWidth,
     required this.imageHeight,
     required this.scale,
+    required this.offset,
   });
 }
 
@@ -65,12 +66,12 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                       children: <Widget>[
                         Image.memory(
                             snapshot.data[0].imageData,
-                          alignment: Alignment.topLeft,
+                          // alignment: Alignment.topLeft,
                         ),
                         for (var face in snapshot.data[1])
                           Positioned(
-                            top: snapshot.data[0].scale * face.boundingBox.top,
-                            left: snapshot.data[0].scale * face.boundingBox.left,
+                            top: snapshot.data[0].scale * face.boundingBox.top + snapshot.data[0].offset.dy,
+                            left: snapshot.data[0].scale * face.boundingBox.left + snapshot.data[0].offset.dx,
                             width: snapshot.data[0].scale * face.boundingBox.width,
                             height: snapshot.data[0].scale * face.boundingBox.height,
                             child: GestureDetector(
@@ -123,8 +124,10 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   Future detectFaces() async {
+    print('face detector started');
     final FirebaseVisionImage firebaseImage = FirebaseVisionImage.fromFile(widget.imageFile);
     final List<Face> detectedFaces = await faceDetector.processImage(firebaseImage);
+    print('face detector ended');
     // faceDetector.close();
     final List<Face> filteredFaces = [];
     for (var face in detectedFaces) {
@@ -146,15 +149,23 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     double screenWidth = MediaQuery.of(context).size.width.toDouble();
     double screenHeight = MediaQuery.of(context).size.height.toDouble();
 
+
     double scaleWidth = screenWidth / imageWidth;
     double scaleHeight = screenHeight / imageHeight;
     double scale = min(scaleWidth, scaleHeight).clamp(0.01, 1.0);
+
+    Offset offset = Offset(
+      0.5 * (screenWidth - scale * imageWidth),
+      0.5 * (screenHeight - scale * imageHeight),
+    );
+
 
     return ImageStruct(
       imageData: imageData,
       imageWidth: imageWidth,
       imageHeight: imageHeight,
       scale : scale,
+      offset : offset,
     );
   }
 }
