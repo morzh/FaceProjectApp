@@ -9,19 +9,20 @@ import 'package:face_project_app/edit_choice_page.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:image_editor/image_editor.dart';
+import 'package:exif/exif.dart';
 
 
 class ImageStruct {
   Uint8List imageData;
   double imageWidth;
   double imageHeight;
-  List<Face> filteredFaces;
+  double scale;
 
   ImageStruct({
     required this.imageData,
     required this.imageWidth,
     required this.imageHeight,
-    required this.filteredFaces,
+    required this.scale,
   });
 }
 
@@ -35,16 +36,15 @@ class FaceDetectionPage extends StatefulWidget {
 
 class _FaceDetectionPage extends State<FaceDetectionPage> {
   final faceDetector = FirebaseVision.instance.faceDetector(
-      FaceDetectorOptions(mode: FaceDetectorMode.accurate));
+      FaceDetectorOptions(mode: FaceDetectorMode.fast));
   final _rng = Random();
   late final imageSize;
 
   @override
   Widget build(BuildContext context) {
     return new FutureBuilder(
-        future: Future.wait([_loadData()]),
+        future: Future.wait([_loadData(context), detectFaces()]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
-
           return snapshot.hasData ? new Scaffold(
             body: snapshot.data.length == 0
             ?Center(child: Text(
@@ -67,12 +67,12 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                             snapshot.data[0].imageData,
                           alignment: Alignment.topLeft,
                         ),
-                        for (var face in snapshot.data[0].filteredFaces)
+                        for (var face in snapshot.data[1])
                           Positioned(
-                            top: (MediaQuery.of(context).size.width / snapshot.data[0].imageWidth).clamp(0.01, 1.0) * face.boundingBox.top,
-                            left: (MediaQuery.of(context).size.width / snapshot.data[0].imageWidth).clamp(0.01, 1.0) * face.boundingBox.left,
-                            width: (MediaQuery.of(context).size.width / snapshot.data[0].imageWidth).clamp(0.01, 1.0) * face.boundingBox.width,
-                            height: (MediaQuery.of(context).size.width / snapshot.data[0].imageWidth).clamp(0.01, 1.0)  * face.boundingBox.height,
+                            top: snapshot.data[0].scale * face.boundingBox.top,
+                            left: snapshot.data[0].scale * face.boundingBox.left,
+                            width: snapshot.data[0].scale * face.boundingBox.width,
+                            height: snapshot.data[0].scale * face.boundingBox.height,
                             child: GestureDetector(
                                 onTap: () async {
                                     final String random = (_rng.nextInt(1000000)).toString();
@@ -136,27 +136,25 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   return filteredFaces;
   }
 
-  Future _loadData() async {
+  Future _loadData(BuildContext context) async {
     final imageData = await widget.imageFile.readAsBytes();
     final decodedImage = await decodeImageFromList(imageData);
-    final imageSize = Size(decodedImage.width.toDouble(), decodedImage.height.toDouble());
-    final FirebaseVisionImage firebaseImage = FirebaseVisionImage.fromFile(widget.imageFile);
-    final List<Face> detectedFaces = await faceDetector.processImage(firebaseImage);
-    // faceDetector.close();
-    final List<Face> filteredFaces = [];
-    for (var face in detectedFaces) {
-      if (face.boundingBox.longestSide / face.boundingBox.shortestSide > 2) {
-        continue;
-      }
-      filteredFaces.add(face);
-    }
 
-    print(filteredFaces[0].boundingBox);
+    double imageWidth = decodedImage.width.toDouble();
+    double imageHeight = decodedImage.height.toDouble();
+
+    double screenWidth = MediaQuery.of(context).size.width.toDouble();
+    double screenHeight = MediaQuery.of(context).size.height.toDouble();
+
+    double scaleWidth = screenWidth / imageWidth;
+    double scaleHeight = screenHeight / imageHeight;
+    double scale = min(scaleWidth, scaleHeight).clamp(0.01, 1.0);
+
     return ImageStruct(
       imageData: imageData,
-      imageWidth: imageSize.width.toDouble(),
-      imageHeight: imageSize.height.toDouble(),
-      filteredFaces: filteredFaces
+      imageWidth: imageWidth,
+      imageHeight: imageHeight,
+      scale : scale,
     );
   }
 }
