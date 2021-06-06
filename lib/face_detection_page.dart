@@ -9,6 +9,8 @@ import 'package:face_project_app/edit_choice_page.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
 import 'package:image_editor/image_editor.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' show utf8;
 
 
 class ImageStruct {
@@ -47,7 +49,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
         future: Future.wait([_loadData(context), detectFaces()]),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           return snapshot.hasData ? new Scaffold(
-            body: snapshot.data.length == 0
+            body: snapshot.data[1].length == 0
             ?Center(child: Text(
                 'No faces found',
                 textAlign: TextAlign.center,
@@ -79,11 +81,15 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                                     final String random = (_rng.nextInt(1000000)).toString();
                                     final Uint8List data = await _cropImage(snapshot.data[0].imageData, face.boundingBox);
                                     final String tempPath = (await getTemporaryDirectory()).path;
-                                    final File dataFile = File('$tempPath/$random.jpg');
+                                    final String filePathSource = tempPath + '/' + random;
+                                    final String filePathEncoded = tempPath + '/' + random + '_encoded';
+                                    print(filePathSource);
+                                    final File dataFile = File(filePathSource);
                                     if (dataFile.existsSync()) { dataFile.deleteSync(); }
                                     dataFile.writeAsBytesSync(data);
                                     // print(dataFile.path);
                                     // print( await dataFile.length());
+                                    final File dataFile2 = await _uploadImageToServer(dataFile, filePathEncoded);
                                     Navigator.push(context, MaterialPageRoute(
                                       builder: (context) =>
                                           EditChoicePage(
@@ -167,6 +173,36 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
       scale : scale,
       offset : offset,
     );
+  }
+
+
+  _uploadImageToServer(File imageFile, String filePath) async   {
+    print("attempting to connecto server......");
+    var stream = new http.ByteStream(Stream.castFrom(imageFile.openRead()));
+    var length = await imageFile.length();
+    print(length);
+
+    var uri = Uri.parse('http://b1ee84c897a4.ngrok.io');
+    print("connection established.");
+    var request = new http.MultipartRequest("POST", uri);
+    var multipartFile = new http.MultipartFile('file', stream, length,
+        filename: imageFile.path);
+    //contentType: new MediaType('image', 'png'));
+
+    request.files.add(multipartFile);
+    final response = await request.send();
+    print('response:');
+    print(response.statusCode);
+    print(response.headers);
+    // var responsebody = await response.stream.transform(utf8.decoder);
+    final File transferedImage = File(filePath); // must assign a File to _transferedImage
+    IOSink sink = transferedImage.openWrite();
+    await sink.addStream(response.stream); // this requires await as addStream is async
+    await sink.close(); // so does this
+    setState(() {});
+    // print(await transferedImage.length());
+    // print(await transferedImage.stat());
+    return transferedImage;
   }
 }
 
