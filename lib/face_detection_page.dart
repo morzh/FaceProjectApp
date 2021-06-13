@@ -4,13 +4,17 @@ import 'dart:typed_data';
 import 'dart:math';
 import 'dart:core';
 
+import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:face_project_app/edit_choice_page.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+// import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:image_editor/image_editor.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert' show utf8;
+// import 'package:http_parser/http_parser.dart';
+import 'package:dio/dio.dart';
+// import 'package:dio_cookie_manager/dio_cookie_manager.dart';
+// import 'package:cookie_jar/cookie_jar.dart';
 
 
 class ImageStruct {
@@ -38,7 +42,7 @@ class FaceDetectionPage extends StatefulWidget {
 }
 
 class _FaceDetectionPage extends State<FaceDetectionPage> {
-  final faceDetector = FirebaseVision.instance.faceDetector(
+  final faceDetector = GoogleMlKit.vision.faceDetector(
       FaceDetectorOptions(mode: FaceDetectorMode.fast));
   final _rng = Random();
   late final imageSize;
@@ -93,7 +97,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                                     Navigator.push(context, MaterialPageRoute(
                                       builder: (context) =>
                                           EditChoicePage(
-                                              imageFile: dataFile
+                                              imageFile: dataFile2
                                           )
                                   )
                                   );
@@ -131,8 +135,8 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
 
   Future detectFaces() async {
     print('face detector started');
-    final FirebaseVisionImage firebaseImage = FirebaseVisionImage.fromFile(widget.imageFile);
-    final List<Face> detectedFaces = await faceDetector.processImage(firebaseImage);
+    final InputImage MlKitImage = InputImage.fromFile(widget.imageFile);
+    final List<Face> detectedFaces = await faceDetector.processImage(MlKitImage);
     print('face detector ended');
     // faceDetector.close();
     final List<Face> filteredFaces = [];
@@ -177,32 +181,71 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
 
 
   _uploadImageToServer(File imageFile, String filePath) async   {
-    print("attempting to connecto server......");
-    var stream = new http.ByteStream(Stream.castFrom(imageFile.openRead()));
-    var length = await imageFile.length();
-    print(length);
+    FormData formData = FormData.fromMap({
+      "name": "wendux",
+      "file": MultipartFile.fromFile(imageFile.path, filename:basename(imageFile.path))
+    });
 
-    var uri = Uri.parse('http://b1ee84c897a4.ngrok.io');
-    print("connection established.");
-    var request = new http.MultipartRequest("POST", uri);
-    var multipartFile = new http.MultipartFile('file', stream, length,
-        filename: imageFile.path);
-    //contentType: new MediaType('image', 'png'));
+    var uri = Uri.parse('http://e0e1e71d4d7d.ngrok.io/');
+    var dio = Dio();
+    // var cookieJar=CookieJar();
+    // dio.interceptors.add(CookieManager(cookieJar));
+    // print(cookieJar.loadForRequest(uri));
+    dio.options.headers['content-type'] = 'application/json';
+    dio.options.headers['accept'] = 'application/json';
+    final response = await dio.postUri(uri,
+        data: formData,
+        options: Options(
+          method: "POST",
+          contentType: 'multipart/form-data',
+          followRedirects: true,
+          headers: {'accept': 'application/json'},
+          validateStatus: (int? status) { return status! < 500; }
+        )
+    );
 
-    request.files.add(multipartFile);
-    final response = await request.send();
     print('response:');
     print(response.statusCode);
     print(response.headers);
-    // var responsebody = await response.stream.transform(utf8.decoder);
+    print(response.redirects);
+
+    return imageFile;
+
+    /*
+    Map<String, String> headersMap = {
+      'set-cookie' : 'session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIk5vIGZpbGUgcGFydCJdfV19.YMYCpQ.X-XZFS9Q7Dm7e-EUt49RNhzJSYA'
+    };
+
+    var uri = Uri.parse('http://9e325129b82b.ngrok.io');
+    var request = http.MultipartRequest('POST', uri);
+    request.files.add(await http.MultipartFile.fromPath('picture', imageFile
+        .path));
+    var response = await request.send();
+
+    print('response:');
+    print(response.statusCode);
+    print(response.headers);
+
+    // var responsebody = response.stream.transform(utf8.decoder);
+    // final imageResponse = Image.memory(await response.stream.toBytes()).image;
+
+
+    final Uint8List imageData = await response.stream.toBytes();
+    final String pathImageResponse = (await getTemporaryDirectory()).path;
+    final File newImage = File('$pathImageResponse/image1.png');
+    newImage.writeAsBytesSync(imageData);
+    */
+
+    /*
     final File transferedImage = File(filePath); // must assign a File to _transferedImage
     IOSink sink = transferedImage.openWrite();
     await sink.addStream(response.stream); // this requires await as addStream is async
     await sink.close(); // so does this
     setState(() {});
+    */
     // print(await transferedImage.length());
     // print(await transferedImage.stat());
-    return transferedImage;
+    // return newImage;
   }
 }
 
