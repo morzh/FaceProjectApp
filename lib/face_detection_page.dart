@@ -11,7 +11,8 @@ import 'package:face_project_app/edit_choice_page.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:image_editor/image_editor.dart';
-// import 'package:http_parser/http_parser.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 // import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 // import 'package:cookie_jar/cookie_jar.dart';
@@ -83,21 +84,21 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                             child: GestureDetector(
                                 onTap: () async {
                                     final String random = (_rng.nextInt(1000000)).toString();
-                                    final Uint8List data = await _cropImage(snapshot.data[0].imageData, face.boundingBox);
+                                    final Uint8List data = await _cropImage(snapshot.data[0], face.boundingBox);
                                     final String tempPath = (await getTemporaryDirectory()).path;
-                                    final String filePathSource = tempPath + '/' + random;
-                                    final String filePathEncoded = tempPath + '/' + random + '_encoded';
+                                    final String filePathSource = tempPath + '/' + random+'.jpg';
+                                    final String filePathEncoded = tempPath + '/' + random + '_encoded.jpg';
                                     print(filePathSource);
                                     final File dataFile = File(filePathSource);
                                     if (dataFile.existsSync()) { dataFile.deleteSync(); }
                                     dataFile.writeAsBytesSync(data);
                                     // print(dataFile.path);
                                     // print( await dataFile.length());
-                                    final File dataFile2 = await _uploadImageToServer(dataFile, filePathEncoded);
+                                    final File dataFileEncoded = await _uploadImageToServer(dataFile, filePathEncoded);
                                     Navigator.push(context, MaterialPageRoute(
                                       builder: (context) =>
                                           EditChoicePage(
-                                              imageFile: dataFile2
+                                              imageFile: dataFileEncoded
                                           )
                                   )
                                   );
@@ -125,11 +126,14 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     );
   }
 
-  Future _cropImage(imageData, Rect rect) async {
+  Future _cropImage(imageStructData, Rect rect) async {
     final editorOption = ImageEditorOption();
+    var imageRect = Rect.fromLTRB(0, 0, imageStructData.imageWidth - 1, imageStructData.imageHeight - 1);
+    rect = rect.inflate(rect.longestSide);
+    rect = rect.intersect(imageRect);
     editorOption.addOption(ClipOption(x: rect.left, y: rect.top, width: rect.width, height : rect.height));
     return ImageEditor.editImage(
-        image: imageData,
+        image: imageStructData.imageData,
         imageEditorOption: editorOption);
   }
 
@@ -181,71 +185,26 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
 
 
   _uploadImageToServer(File imageFile, String filePath) async   {
-    FormData formData = FormData.fromMap({
-      "name": "wendux",
-      "file": MultipartFile.fromFile(imageFile.path, filename:basename(imageFile.path))
-    });
-
-    var uri = Uri.parse('http://e0e1e71d4d7d.ngrok.io/');
-    var dio = Dio();
-    // var cookieJar=CookieJar();
-    // dio.interceptors.add(CookieManager(cookieJar));
-    // print(cookieJar.loadForRequest(uri));
-    dio.options.headers['content-type'] = 'application/json';
-    dio.options.headers['accept'] = 'application/json';
-    final response = await dio.postUri(uri,
-        data: formData,
-        options: Options(
-          method: "POST",
-          contentType: 'multipart/form-data',
-          followRedirects: true,
-          headers: {'accept': 'application/json'},
-          validateStatus: (int? status) { return status! < 500; }
+    var uri = Uri.parse('http://5472fbbbb090.ngrok.io');
+    var request =  http.MultipartRequest("POST", uri);
+    // request.fields['user'] = 'blah';
+    request.files.add(
+        http.MultipartFile.fromBytes(
+            'file', await imageFile.readAsBytes(),
+            filename: basename(imageFile.path),
+            contentType: new MediaType('image','jpeg')
         )
     );
 
+    final response = await request.send();
     print('response:');
     print(response.statusCode);
     print(response.headers);
-    print(response.redirects);
-
-    return imageFile;
-
-    /*
-    Map<String, String> headersMap = {
-      'set-cookie' : 'session=eyJfZmxhc2hlcyI6W3siIHQiOlsibWVzc2FnZSIsIk5vIGZpbGUgcGFydCJdfV19.YMYCpQ.X-XZFS9Q7Dm7e-EUt49RNhzJSYA'
-    };
-
-    var uri = Uri.parse('http://9e325129b82b.ngrok.io');
-    var request = http.MultipartRequest('POST', uri);
-    request.files.add(await http.MultipartFile.fromPath('picture', imageFile
-        .path));
-    var response = await request.send();
-
-    print('response:');
-    print(response.statusCode);
-    print(response.headers);
-
-    // var responsebody = response.stream.transform(utf8.decoder);
     // final imageResponse = Image.memory(await response.stream.toBytes()).image;
+    final File iamgeRsponseaFile = File(filePath);
+    iamgeRsponseaFile.writeAsBytesSync(await response.stream.toBytes());
+    return iamgeRsponseaFile;
 
-
-    final Uint8List imageData = await response.stream.toBytes();
-    final String pathImageResponse = (await getTemporaryDirectory()).path;
-    final File newImage = File('$pathImageResponse/image1.png');
-    newImage.writeAsBytesSync(imageData);
-    */
-
-    /*
-    final File transferedImage = File(filePath); // must assign a File to _transferedImage
-    IOSink sink = transferedImage.openWrite();
-    await sink.addStream(response.stream); // this requires await as addStream is async
-    await sink.close(); // so does this
-    setState(() {});
-    */
-    // print(await transferedImage.length());
-    // print(await transferedImage.stat());
-    // return newImage;
   }
 }
 
