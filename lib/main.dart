@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:face_project_app/ExpandableFab.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -8,6 +9,8 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:face_project_app/face_detection_page.dart';
 import 'package:face_project_app/edit_choice_page.dart';
+
+import 'package:face_project_app/ExpandableFab.dart';
 
 
 void main() {
@@ -42,39 +45,49 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   final _imagePicker = ImagePicker();
   late File _image;
+  static const _actionTitles = ['Gallery Video', 'Camera Photo'];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            toolbarHeight: 25,
-            stretch: true,
-            pinned: false,
-            // expandedHeight: 100,
-            title: Text("Face Project App", style: TextStyle(color: Colors.amber), textScaleFactor: 0.75,),
-            // floating: true
+      body: NestedScrollView(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            SliverAppBar(
+              toolbarHeight: 25,
+              stretch: true,
+              pinned: false,
+              // expandedHeight: 100,
+              title: Text("Face Project App", style: TextStyle(color: Colors.amber), textScaleFactor: 0.75,),
+              // floating: true
+            ),
+          ];
+        },
+        body: MediaGrid()
+      ),
+      floatingActionButton:  ExpandableFab(
+        distance: 80.0,
+        children: [
+          ActionButton(
+            onPressed: () => _showAction(context, 0),
+            icon: const Icon(Icons.insert_photo),
           ),
-        SliverFillRemaining(
-            child: MediaGrid()
-            )
-        ]
+          ActionButton(
+            onPressed: () => _showAction(context, 1),
+            icon: const Icon(Icons.camera_alt),
+          ),
+        ],
       ),
-      floatingActionButton:  FloatingActionButton(
-        onPressed: getImage,
-        tooltip: 'Take a photo',
-        child: Icon(Icons.camera_alt),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(18.0))
-        ),
-        foregroundColor: Colors.grey,
-        backgroundColor: Colors.black87,
-      ),
-      );
+
+    );
   }
 
-  Future getImage() async{
-    final pickedFile = await _imagePicker.getImage(source: ImageSource.camera);
+  void _showAction(BuildContext context, int index) {
+       index == 1 ? getImage(ImageSource.camera): getImage(ImageSource.gallery);
+  }
+
+  Future getImage(picker_source) async{
+    final pickedFile = await _imagePicker.getImage(source: picker_source);
     if (pickedFile == null) return;
     final imageFile = File(pickedFile.path);
     setState(() {
