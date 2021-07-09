@@ -45,24 +45,20 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: Colors.blue,
-      body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            SizedBox(height: 8,),
-            Text('    Face Project App', style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w600,
-              // color: Colors.white70,
-            ),
-              textAlign: TextAlign.left,),
-          SizedBox( height: 14, ),
-          Expanded(
-            child: MediaGrid(),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            toolbarHeight: 25,
+            stretch: true,
+            pinned: false,
+            // expandedHeight: 100,
+            title: Text("Face Project App", style: TextStyle(color: Colors.amber), textScaleFactor: 0.75,),
+            // floating: true
+          ),
+        SliverFillRemaining(
+            child: MediaGrid()
             )
-          ],
-      )
+        ]
       ),
       floatingActionButton:  FloatingActionButton(
         onPressed: getImage,
@@ -165,20 +161,6 @@ class _MediaGridState extends State<MediaGrid> {
                     child: Container(
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.white.withOpacity(0.3),
-                              spreadRadius: 1,
-                              blurRadius: 5,
-                              offset: Offset(-2, -2),
-                          ),
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.8),
-                              spreadRadius: 1,
-                              blurRadius: 5,
-                              offset: Offset(2, 2),
-                          ),
-                          ],
                           image: DecorationImage(
                               image: MemoryImage(snapshot.data),
                               fit: BoxFit.cover
@@ -211,16 +193,10 @@ class _MediaGridState extends State<MediaGrid> {
           return true;
         },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        decoration: BoxDecoration(
-            color: Colors.white10,
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20),
-              // topRight: Radius.circular(5),
-            )
-        ),
+        // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: GridView.builder(
             itemCount: _mediaList.length,
+            shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 3,
               crossAxisSpacing: 10,

@@ -133,10 +133,17 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: ebf43caa23a0d734e7cce3d575bb444a61ce5913
+      resolved-ref: "1d2d871670acf083196320829a2fdd9a13f44f94"
       url: "https://github.com/shofizone/gallery_saver.git"
     source: git
     version: "2.1.0"
+  get:
+    dependency: "direct main"
+    description:
+      name: get
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.4"
   google_ml_kit:
     dependency: "direct main"
     description:
