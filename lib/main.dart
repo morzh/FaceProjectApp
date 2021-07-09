@@ -3,14 +3,10 @@ import 'dart:io';
 
 import 'package:face_project_app/ExpandableFab.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:image_picker/image_picker.dart';
-
 import 'package:face_project_app/face_detection_page.dart';
-import 'package:face_project_app/edit_choice_page.dart';
-
-import 'package:face_project_app/ExpandableFab.dart';
+import 'package:get/get.dart';
 
 
 void main() {
@@ -21,13 +17,12 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Face Flow App',
-      theme:
-      ThemeData.from(colorScheme: ColorScheme.light()),
-      themeMode: ThemeMode.dark,
+      theme: ThemeData.from(colorScheme: ColorScheme.light()),
       darkTheme: ThemeData.from(colorScheme: ColorScheme.dark()),
+      themeMode: ThemeMode.system,
       home: MyHomePage(title: 'Face Flow App'),
     );
   }
@@ -86,8 +81,8 @@ class _MyHomePageState extends State<MyHomePage> {
        index == 1 ? getImage(ImageSource.camera): getImage(ImageSource.gallery);
   }
 
-  Future getImage(picker_source) async{
-    final pickedFile = await _imagePicker.getImage(source: picker_source);
+  Future getImage(pickerSource) async{
+    final pickedFile = await _imagePicker.getImage(source: pickerSource);
     if (pickedFile == null) return;
     final imageFile = File(pickedFile.path);
     setState(() {
