@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:face_project_app/ExpandableFab.dart';
+// import 'package:face_project_app/ExpandableFab.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:face_project_app/face_detection_page.dart';
 import 'package:get/get.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 
 void main() {
@@ -75,24 +76,31 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         body: MediaGrid()
       ),
-      floatingActionButton: ExpandableFab(
-        distance: 80.0,
+      floatingActionButton: SpeedDial(
+        animatedIcon: AnimatedIcons.menu_close,
+        activeBackgroundColor: theme.backgroundColor,
+        backgroundColor: theme.accentColor,
+        spaceBetweenChildren: 15,
         children: [
-          ActionButton(
-            onPressed: () => _showAction(context, 0),
-            icon: const Icon(Icons.insert_photo),
+          SpeedDialChild(
+            child: const Icon(Icons.insert_photo),
+            backgroundColor: theme.accentColor,
+            label: "choose image from gallery",
+            onTap: () =>_showAction(0)
           ),
-          ActionButton(
-            onPressed: () => _showAction(context, 1),
-            icon: const Icon(Icons.camera_alt),
-          ),
+          SpeedDialChild(
+            child: const Icon(Icons.camera_alt),
+            backgroundColor: theme.accentColor,
+            label: "take photo from camera",
+              onTap: () =>_showAction(1)
+          )
         ],
-      ),
+      )
     );
   }
 
 
-  void _showAction(BuildContext context, int index) {
+  void _showAction(int index) {
        index == 1 ? getImage(ImageSource.camera): getImage(ImageSource.gallery);
   }
 
