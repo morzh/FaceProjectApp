@@ -38,13 +38,28 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var _scrollController = ScrollController();
+  var isOpen = false;
   final _imagePicker = ImagePicker();
   late File _image;
-  static const _actionTitles = ['Gallery Video', 'Camera Photo'];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: NestedScrollView(
+        controller: _scrollController,
         floatHeaderSlivers: true,
         headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
           return <Widget>[
@@ -53,14 +68,14 @@ class _MyHomePageState extends State<MyHomePage> {
               stretch: true,
               pinned: false,
               // expandedHeight: 100,
-              title: Text("Face Project App", style: TextStyle(color: Colors.amber), textScaleFactor: 0.75,),
+              title: Text("Face Project App"),
               // floating: true
             ),
           ];
         },
         body: MediaGrid()
       ),
-      floatingActionButton:  ExpandableFab(
+      floatingActionButton: ExpandableFab(
         distance: 80.0,
         children: [
           ActionButton(
@@ -73,9 +88,9 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-
     );
   }
+
 
   void _showAction(BuildContext context, int index) {
        index == 1 ? getImage(ImageSource.camera): getImage(ImageSource.gallery);
@@ -91,8 +106,6 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.push(context, MaterialPageRoute(
         builder: (context) => FaceDetectionPage(
           imageFile: _image,
-        // builder: (context) => EditChoicePage(
-        //     selectedImage: Image.file(_image)
         )
     )
     );
@@ -178,8 +191,7 @@ class _MediaGridState extends State<MediaGrid> {
                 );
               } else {
                 return Icon(Icons.image_rounded);
-              }
-            // return Container();
+              }  // return Container();
               }
           )
         );
@@ -201,7 +213,6 @@ class _MediaGridState extends State<MediaGrid> {
           return true;
         },
       child: Container(
-        // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: GridView.builder(
             itemCount: _mediaList.length,
             shrinkWrap: true,

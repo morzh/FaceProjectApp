@@ -24,6 +24,7 @@ dependencies:
   dio: ^4.0.0
   http: ^0.13.3
   get: ^4.1.4
+  flutter_speed_dial: ^4.1.0
   flutter:
     sdk: flutter
 

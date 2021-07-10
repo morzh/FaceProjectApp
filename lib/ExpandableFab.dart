@@ -25,6 +25,7 @@ class _ExpandableFabState extends State<ExpandableFab>
   late final Animation<double> _expandAnimation;
   bool _open = false;
 
+
   @override
   void initState() {
     super.initState();
@@ -58,6 +59,15 @@ class _ExpandableFabState extends State<ExpandableFab>
     });
   }
 
+
+/*
+  _handleScrollEvent(scroll) {
+    if (scroll.metrics.pixels == scroll.metrics.maxScrollExtent) {
+      print('_handleScrollEvent');
+    }
+  }
+*/
+
   @override
   Widget build(BuildContext context) {
     return SizedBox.expand(
@@ -74,6 +84,7 @@ class _ExpandableFabState extends State<ExpandableFab>
   }
 
   Widget _buildTapToCloseFab() {
+    print('_buildTapToCloseFab');
     return SizedBox(
       width: 56.0,
       height: 56.0,
