@@ -87,13 +87,13 @@ class _MyHomePageState extends State<MyHomePage> {
             child: const Icon(Icons.insert_photo),
             backgroundColor: theme.accentColor,
             label: "choose image from gallery",
-            onTap: () =>_showAction(0)
+            onTap: () => getImage(ImageSource.gallery)
           ),
           SpeedDialChild(
             child: const Icon(Icons.camera_alt),
             backgroundColor: theme.accentColor,
             label: "take photo from camera",
-              onTap: () =>_showAction(1)
+              onTap: () => getImage(ImageSource.camera)
           )
         ],
       )
@@ -101,9 +101,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
-  void _showAction(int index) {
-       index == 1 ? getImage(ImageSource.camera): getImage(ImageSource.gallery);
-  }
+  // void _showAction(int index) {
+  //      index == 1 ? getImage(ImageSource.camera): getImage(ImageSource.gallery);
+  // }
 
   Future getImage(pickerSource) async{
     final pickedFile = await _imagePicker.getImage(source: pickerSource);
@@ -112,12 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _image = imageFile;
     });
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) => FaceDetectionPage(
-          imageFile: _image,
-        )
-    )
-    );
+    Get.to(FaceDetectionPage(imageFile: _image));
   }
 }
 
