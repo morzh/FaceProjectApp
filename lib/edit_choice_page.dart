@@ -1,21 +1,13 @@
 import 'dart:async';
-// import 'dart:typed_data';
 import 'dart:io';
 import 'dart:ui';
-import 'package:flutter/cupertino.dart';
-// import 'package:path_provider/path_provider.dart';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'animated_index_stack.dart';
-
-
-class ImageUtils {
-
-}
-
 
 List<AssetImage> _editChoiceButtons = [
   AssetImage('assets/buttons_images/head_left_right.png'),

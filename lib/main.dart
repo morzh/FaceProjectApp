@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:face_project_app/face_detection_page.dart';
 import 'package:get/get.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+// import 'package:animate_icons/animate_icons.dart';
 
 
 void main() {
@@ -172,7 +173,6 @@ class _MediaGridState extends State<MediaGrid> {
       print(media);
       List<Widget> temp = [];
       for (var asset in media) {
-        // _absolutePath = await FlutterAbsolutePath.getAbsolutePath(asset.id);
         temp.add(
             FutureBuilder(
             future: asset.thumbData,
@@ -181,11 +181,7 @@ class _MediaGridState extends State<MediaGrid> {
                 return GestureDetector(
                     onTap: () async {
                       File file = (await asset.file)!;
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) =>
-                              FaceDetectionPage(imageFile: file)
-                      )
-                      );
+                      Get.to(FaceDetectionPage(imageFile: file,));
                     },
                     child: Container(
                       decoration: BoxDecoration(

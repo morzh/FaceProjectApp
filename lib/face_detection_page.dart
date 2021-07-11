@@ -16,6 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 // import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 // import 'package:cookie_jar/cookie_jar.dart';
+import 'package:get/get.dart';
 
 
 class ImageStruct {
@@ -95,13 +96,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                                     // print(dataFile.path);
                                     // print( await dataFile.length());
                                     final File dataFileEncoded = await _uploadImageToServer(dataFile, filePathEncoded);
-                                    Navigator.push(context, MaterialPageRoute(
-                                      builder: (context) =>
-                                          EditChoicePage(
-                                              imageFile: dataFileEncoded
-                                          )
-                                  )
-                                  );
+                                    Get.off(EditChoicePage(imageFile: dataFileEncoded));
                                 },
                               child: Container(
                               decoration: BoxDecoration(
@@ -139,8 +134,8 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
 
   Future detectFaces() async {
     print('face detector started');
-    final InputImage MlKitImage = InputImage.fromFile(widget.imageFile);
-    final List<Face> detectedFaces = await faceDetector.processImage(MlKitImage);
+    final InputImage mlKitImage = InputImage.fromFile(widget.imageFile);
+    final List<Face> detectedFaces = await faceDetector.processImage(mlKitImage);
     print('face detector ended');
     // faceDetector.close();
     final List<Face> filteredFaces = [];
@@ -163,7 +158,6 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     double screenWidth = MediaQuery.of(context).size.width.toDouble();
     double screenHeight = MediaQuery.of(context).size.height.toDouble();
 
-
     double scaleWidth = screenWidth / imageWidth;
     double scaleHeight = screenHeight / imageHeight;
     double scale = min(scaleWidth, scaleHeight).clamp(0.01, 1.0);
@@ -172,7 +166,6 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
       0.5 * (screenWidth - scale * imageWidth),
       0.5 * (screenHeight - scale * imageHeight),
     );
-
 
     return ImageStruct(
       imageData: imageData,
@@ -183,9 +176,8 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     );
   }
 
-
   _uploadImageToServer(File imageFile, String filePath) async   {
-    var uri = Uri.parse('http://5472fbbbb090.ngrok.io');
+    var uri = Uri.parse('http://dc4e5826ee65.ngrok.io');
     var request =  http.MultipartRequest("POST", uri);
     // request.fields['user'] = 'blah';
     request.files.add(
