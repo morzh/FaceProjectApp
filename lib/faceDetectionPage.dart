@@ -6,7 +6,7 @@ import 'dart:core';
 
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:face_project_app/EditChoicePage.dart';
+import 'package:face_project_app/editChoicePage.dart';
 // import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:flutter/material.dart';
