@@ -86,25 +86,20 @@ class _MyHomePageState extends State<MyHomePage> {
             child: const Icon(Icons.insert_photo),
             backgroundColor: theme.accentColor,
             label: "choose image from gallery",
-            onTap: () => getImage(ImageSource.gallery)
+            onTap: () => _getImage(ImageSource.gallery)
           ),
           SpeedDialChild(
             child: const Icon(Icons.camera_alt),
             backgroundColor: theme.accentColor,
             label: "take photo from camera",
-              onTap: () => getImage(ImageSource.camera)
+              onTap: () => _getImage(ImageSource.camera)
           )
         ],
       )
     );
   }
 
-
-  // void _showAction(int index) {
-  //      index == 1 ? getImage(ImageSource.camera): getImage(ImageSource.gallery);
-  // }
-
-  Future getImage(pickerSource) async{
+  Future _getImage(pickerSource) async{
     final pickedFile = await _imagePicker.getImage(source: pickerSource);
     if (pickedFile == null) return;
     final imageFile = File(pickedFile.path);
