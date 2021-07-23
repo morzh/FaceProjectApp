@@ -13,6 +13,7 @@ import 'package:image_editor/image_editor.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'dart:convert';
 
 
 class ImageStruct {
@@ -44,6 +45,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
       FaceDetectorOptions(mode: FaceDetectorMode.fast));
   final _rng = Random();
   late final imageSize;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -80,19 +82,22 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                             height: snapshot.data[0].scale * face.boundingBox.height,
                             child: GestureDetector(
                                 onTap: () async {
-                                    final String random = (_rng.nextInt(1000000)).toString();
-                                    final Uint8List data = await _cropImage(snapshot.data[0], face.boundingBox);
-                                    final String tempPath = (await getTemporaryDirectory()).path;
-                                    final String filePathSource = tempPath + '/' + random+'.jpg';
-                                    final String filePathEncoded = tempPath + '/' + random + '_encoded.jpg';
-                                    print(filePathSource);
-                                    final File dataFile = File(filePathSource);
-                                    if (dataFile.existsSync()) { dataFile.deleteSync(); }
-                                    dataFile.writeAsBytesSync(data);
-                                    // print(dataFile.path);
-                                    // print( await dataFile.length());
-                                    final File dataFileEncoded = await _uploadImageToServer(dataFile, filePathEncoded);
-                                    Get.off(EditChoicePage(imageFile: dataFileEncoded));
+                                  setState(() {
+                                    _isLoading = !_isLoading;
+                                  });
+                                  final String random = (_rng.nextInt(1000000)).toString();
+                                  final Uint8List data = await _cropImage(snapshot.data[0], face.boundingBox);
+                                  final String tempPath = (await getTemporaryDirectory()).path;
+                                  final String filePathSource = tempPath + '/' + random+'.jpg';
+                                  final String filePathEncoded = tempPath + '/' + random + '_encoded.jpg';
+                                  print(filePathSource);
+                                  final File dataFile = File(filePathSource);
+                                  if (dataFile.existsSync()) { dataFile.deleteSync(); }
+                                  dataFile.writeAsBytesSync(data);
+                                  // print(dataFile.path);
+                                  // print( await dataFile.length());
+                                  final File dataFileEncoded = await _uploadImageToServer(dataFile, filePathEncoded);
+                                  Get.off(() => EditChoicePage(imageFile: dataFileEncoded));
                                 },
                               child: Container(
                               decoration: BoxDecoration(
@@ -103,7 +108,15 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                               ),
                             ),
                           ),
-                          )
+                          ),
+                        Visibility(
+                          visible: _isLoading,
+                            child: Center(
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 7,
+                                )
+                            )
+                        )
                       ],
                     ),
                   ),
@@ -173,14 +186,13 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   _uploadImageToServer(File imageFile, String filePath) async   {
-    var uri = Uri.parse('http://dc4e5826ee65.ngrok.io');
+    var uri = Uri.parse('http://1c6199407cfb.ngrok.io');
     var request =  http.MultipartRequest("POST", uri);
-    // request.fields['user'] = 'blah';
     request.files.add(
         http.MultipartFile.fromBytes(
             'file', await imageFile.readAsBytes(),
             filename: basename(imageFile.path),
-            contentType: new MediaType('image','jpeg')
+            contentType: MediaType('image','jpeg')
         )
     );
 
@@ -188,11 +200,14 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     print('response:');
     print(response.statusCode);
     print(response.headers);
-    // final imageResponse = Image.memory(await response.stream.toBytes()).image;
+    final jsonResponse = json.decode(await response.stream.bytesToString());
+    final image_aligned_decode = base64.decode(base64.normalize(jsonResponse["ImageAligned"]));
     final File iamgeRsponseaFile = File(filePath);
-    iamgeRsponseaFile.writeAsBytesSync(await response.stream.toBytes());
+    iamgeRsponseaFile.writeAsBytesSync(image_aligned_decode.toList());
+    setState(() {
+      _isLoading = !_isLoading;
+    });
     return iamgeRsponseaFile;
-
   }
 }
 

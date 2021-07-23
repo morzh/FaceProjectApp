@@ -7,7 +7,6 @@ import 'package:face_project_app/mediaGrid.dart';
 import 'package:get/get.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:face_project_app/faceDetectionPage.dart';
-// import 'package:animate_icons/animate_icons.dart';
 
 
 void main() {

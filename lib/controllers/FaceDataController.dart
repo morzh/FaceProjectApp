@@ -10,15 +10,15 @@ import 'package:face_project_app/models/faceData.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';
+import 'dart:convert';
 
 class FaceDataController extends GetxController {
   var faceData = FaceData().obs;
 
   void fetchProduct(File imageFile, String filePath) async {
-    faceData.original = imageFile;
+    faceData.value.original = imageFile;
     var uri = Uri.parse('http://dc4e5826ee65.ngrok.io');
     var request =  http.MultipartRequest("POST", uri);
-    // request.fields['user'] = 'blah';
     request.files.add(
         http.MultipartFile.fromBytes(
             'file', await imageFile.readAsBytes(),
@@ -31,10 +31,11 @@ class FaceDataController extends GetxController {
     print('response:');
     print(response.statusCode);
     print(response.headers);
-    // final imageResponse = Image.memory(await response.stream.toBytes()).image;
+    var jsonResponse = json.decode(response.toString());
+    print(jsonResponse);
+    var image_aligned_decoded = base64.decode(jsonResponse['ImageAligned']);
     final File iamgeRsponseaFile = File(filePath);
-    faceDataFromJson(JsonFromStream()(response.stream));
     iamgeRsponseaFile.writeAsBytesSync(await response.stream.toBytes());
-    return iamgeRsponseaFile;
+    // return iamgeRsponseaFile;
   }
 }
