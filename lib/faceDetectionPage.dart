@@ -14,6 +14,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'dart:convert';
+import 'package:face_project_app/models/faceData.dart';
 
 
 class ImageStruct {
@@ -201,13 +202,19 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     print(response.statusCode);
     print(response.headers);
     final jsonResponse = json.decode(await response.stream.bytesToString());
-    final image_aligned_decode = base64.decode(base64.normalize(jsonResponse["ImageAligned"]));
-    final File iamgeRsponseaFile = File(filePath);
-    iamgeRsponseaFile.writeAsBytesSync(image_aligned_decode.toList());
+    final imageAlignedDecoded = base64.decode(base64.normalize(jsonResponse["ImageAligned"]));
+    final imageEncodedDecoded = base64.decode(base64.normalize(jsonResponse["ImageEncoded"]));
+    final latentDecoded = base64.decode(base64.normalize(jsonResponse["latent"]));
+    final faceAttributestDecoded = base64.decode(base64.normalize(jsonResponse["faceAttributes"]));
+    final File alignedImage = File(filePath);
+    final File encodedImage = File(filePath);
+    alignedImage.writeAsBytesSync(imageAlignedDecoded.toList());
+    encodedImage.writeAsBytesSync(imageEncodedDecoded.toList());
     setState(() {
       _isLoading = !_isLoading;
     });
-    return iamgeRsponseaFile;
+    FaceData(alignedImage, encodedImage, );
+    return alignedImage;
   }
 }
 
