@@ -7,15 +7,11 @@ import 'dart:core';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:face_project_app/editChoicePage.dart';
-// import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:image_editor/image_editor.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
-// import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-// import 'package:cookie_jar/cookie_jar.dart';
 import 'package:get/get.dart';
 
 
