@@ -16,7 +16,7 @@ class FaceDataController extends GetxController {
   var faceData = FaceData().obs;
 
   void fetchProduct(File imageFile, String filePath) async {
-    faceData.value.original = imageFile;
+    faceData.value.alignedImage = imageFile;
     var uri = Uri.parse('http://dc4e5826ee65.ngrok.io');
     var request =  http.MultipartRequest("POST", uri);
     request.files.add(

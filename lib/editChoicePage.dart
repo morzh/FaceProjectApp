@@ -8,6 +8,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'animatedIndexStack.dart';
+import 'package:face_project_app/models/faceData.dart';
 
 List<AssetImage> _editChoiceButtons = [
   AssetImage('assets/buttons_images/head_left_right.png'),
@@ -23,10 +24,10 @@ List<AssetImage> _editChoiceButtons = [
 ];
 
 class EditChoicePage extends StatefulWidget {
-  File imageFile;
-  EditChoicePage({required this.imageFile}){
-    // print(selectedImage);
-  }
+  FaceData faceData;
+  EditChoicePage({
+    required this.faceData
+  });
   @override
   _EditChoicePage createState() => _EditChoicePage();
 }
@@ -38,10 +39,17 @@ class _EditChoicePage extends State<EditChoicePage> {
   void _updateWidgetIndex(int idx) {
     setState(() => _widgetIndex = idx);
   }
-  void _updateSliderValue(double value) { setState(() => _sliderValue = value); }
-  double _getSliderValue() { return _sliderValue; }
+
+  void _updateSliderValue(double value) {
+    setState(() => _sliderValue = value);
+  }
+
+  double _getSliderValue() {
+    return _sliderValue;
+  }
+
   Future<File> _getSelectedImage() async {
-    return widget.imageFile;
+    return widget.faceData.encodedImage;
   }
 
   @override
@@ -52,7 +60,7 @@ class _EditChoicePage extends State<EditChoicePage> {
           children: <Widget>[
             Expanded(
                 child: PhotoView(
-                  imageProvider: Image.file(widget.imageFile).image,
+                  imageProvider: Image.file(widget.faceData.encodedImage).image,
                 )
             ),
             AnimatedIndexedStack(
@@ -80,7 +88,6 @@ class EditWithSlider extends StatelessWidget {
   final ValueChanged<double> updateSliderValue;
   final ValueChanged<int> updateWidgetIndex;
   final ValueGetter<double> getSliderValue;
-  // final double _sliderValue = 0.0;
 
   const EditWithSlider ({
     required this.updateSliderValue,

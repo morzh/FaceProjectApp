@@ -15,6 +15,7 @@ import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'dart:convert';
 import 'package:face_project_app/models/faceData.dart';
+import 'package:matrix2d/matrix2d.dart';
 
 
 class ImageStruct {
@@ -89,16 +90,16 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                                   final String random = (_rng.nextInt(1000000)).toString();
                                   final Uint8List data = await _cropImage(snapshot.data[0], face.boundingBox);
                                   final String tempPath = (await getTemporaryDirectory()).path;
-                                  final String filePathSource = tempPath + '/' + random+'.jpg';
-                                  final String filePathEncoded = tempPath + '/' + random + '_encoded.jpg';
-                                  print(filePathSource);
-                                  final File dataFile = File(filePathSource);
+                                  final String filePathImageSource = tempPath + '/' + random+'.jpg';
+                                  final String filePathFaceDataBase = tempPath + '/' + random;
+                                  print(filePathImageSource);
+                                  final File dataFile = File(filePathImageSource);
                                   if (dataFile.existsSync()) { dataFile.deleteSync(); }
                                   dataFile.writeAsBytesSync(data);
                                   // print(dataFile.path);
                                   // print( await dataFile.length());
-                                  final File dataFileEncoded = await _uploadImageToServer(dataFile, filePathEncoded);
-                                  Get.off(() => EditChoicePage(imageFile: dataFileEncoded));
+                                  final FaceData faceData = await _uploadImageToServer(dataFile, filePathFaceDataBase);
+                                  Get.off(() => EditChoicePage(faceData: faceData));
                                 },
                               child: Container(
                               decoration: BoxDecoration(
@@ -187,7 +188,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   _uploadImageToServer(File imageFile, String filePath) async   {
-    var uri = Uri.parse('http://1c6199407cfb.ngrok.io');
+    var uri = Uri.parse('http://7e928d4a0111.ngrok.io');
     var request =  http.MultipartRequest("POST", uri);
     request.files.add(
         http.MultipartFile.fromBytes(
@@ -202,19 +203,26 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     print(response.statusCode);
     print(response.headers);
     final jsonResponse = json.decode(await response.stream.bytesToString());
-    final imageAlignedDecoded = base64.decode(base64.normalize(jsonResponse["ImageAligned"]));
-    final imageEncodedDecoded = base64.decode(base64.normalize(jsonResponse["ImageEncoded"]));
-    final latentDecoded = base64.decode(base64.normalize(jsonResponse["latent"]));
-    final faceAttributestDecoded = base64.decode(base64.normalize(jsonResponse["faceAttributes"]));
-    final File alignedImage = File(filePath);
-    final File encodedImage = File(filePath);
+    final imageAlignedDecoded = base64.decode(jsonResponse["ImageAligned"]);
+    final imageEncodedDecoded = base64.decode(jsonResponse["ImageEncoded"]);
+    final latentDecoded = Matrix2d();
+    final FaceAttributes faceAttributes = FaceAttributes.fromJson(jsonResponse["faceAttributes"]);
+    faceAttributes.printAttributes();
+    final File alignedImage = File(filePath + '_aligned.jpg');
+    final File encodedImage = File(filePath + '_encoded.jpg');
     alignedImage.writeAsBytesSync(imageAlignedDecoded.toList());
     encodedImage.writeAsBytesSync(imageEncodedDecoded.toList());
     setState(() {
       _isLoading = !_isLoading;
     });
-    FaceData(alignedImage, encodedImage, );
-    return alignedImage;
+    return FaceData(
+        alignedImage: alignedImage,
+        encodedImage: encodedImage,
+        faceAttributes: faceAttributes,
+        latentEncoded: latentDecoded,
+        latentAugmented: latentDecoded
+    );
+    // return alignedImage;
   }
 }
 
