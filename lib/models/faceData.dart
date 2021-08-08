@@ -1,9 +1,10 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:matrix2d/matrix2d.dart';
 
 class FaceAttributes {
-  late int gender;
-  late int glasses;
+  late double gender;
+  late double glasses;
   late double yaw;
   late double pitch;
   late double beard;
@@ -37,7 +38,7 @@ class FaceAttributes {
     return FaceAttributes(
         gender: parsedJson['gender'],
         glasses: parsedJson['glasses'],
-        yaw: parsedJson ['yaw'],
+        yaw: parsedJson['yaw'],
         pitch: parsedJson ['pitch'],
         beard: parsedJson ['beard'],
         bald: parsedJson ['bald'],
@@ -61,8 +62,8 @@ class FaceAttributes {
 class FaceData {
   late final File alignedImage;
   late final File encodedImage;
-  late final Matrix2d latentEncoded;
-  late final Matrix2d latentAugmented;
+  late final List latentEncoded;
+  late final List latentAugmented;
   late FaceAttributes faceAttributes;
 
   FaceData({
@@ -72,4 +73,9 @@ class FaceData {
     required this.latentEncoded,
     required this.latentAugmented
   });
+
+  printLatents() {
+    print(this.latentEncoded);
+    print(this.latentAugmented);
+  }
 }

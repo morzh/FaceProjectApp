@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'dart:math';
 import 'dart:core';
+import 'dart:typed_data';
 
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -96,9 +97,8 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                                   final File dataFile = File(filePathImageSource);
                                   if (dataFile.existsSync()) { dataFile.deleteSync(); }
                                   dataFile.writeAsBytesSync(data);
-                                  // print(dataFile.path);
-                                  // print( await dataFile.length());
                                   final FaceData faceData = await _uploadImageToServer(dataFile, filePathFaceDataBase);
+                                  // faceData.printLatents();
                                   Get.off(() => EditChoicePage(faceData: faceData));
                                 },
                               child: Container(
@@ -188,7 +188,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   _uploadImageToServer(File imageFile, String filePath) async   {
-    var uri = Uri.parse('http://7e928d4a0111.ngrok.io');
+    var uri = Uri.parse('http://f6f4c0404aa6.ngrok.io');
     var request =  http.MultipartRequest("POST", uri);
     request.files.add(
         http.MultipartFile.fromBytes(
@@ -201,13 +201,14 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     final response = await request.send();
     print('response:');
     print(response.statusCode);
-    print(response.headers);
+    // print(response.headers);
     final jsonResponse = json.decode(await response.stream.bytesToString());
-    final imageAlignedDecoded = base64.decode(jsonResponse["ImageAligned"]);
-    final imageEncodedDecoded = base64.decode(jsonResponse["ImageEncoded"]);
-    final latentDecoded = Matrix2d();
-    final FaceAttributes faceAttributes = FaceAttributes.fromJson(jsonResponse["faceAttributes"]);
-    faceAttributes.printAttributes();
+    // print(jsonResponse["faceAttributes"]);
+    final FaceAttributes faceAttributes = FaceAttributes.fromJson(await jsonResponse["faceAttributes"]);
+    final imageAlignedDecoded = base64.decode(await jsonResponse["ImageAligned"]);
+    final imageEncodedDecoded = base64.decode(await jsonResponse["ImageEncoded"]);
+    final latents = jsonResponse["latent"];
+    // faceAttributes.printAttributes();
     final File alignedImage = File(filePath + '_aligned.jpg');
     final File encodedImage = File(filePath + '_encoded.jpg');
     alignedImage.writeAsBytesSync(imageAlignedDecoded.toList());
@@ -219,10 +220,9 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
         alignedImage: alignedImage,
         encodedImage: encodedImage,
         faceAttributes: faceAttributes,
-        latentEncoded: latentDecoded,
-        latentAugmented: latentDecoded
+        latentEncoded: latents,
+        latentAugmented: latents
     );
-    // return alignedImage;
   }
 }
 
