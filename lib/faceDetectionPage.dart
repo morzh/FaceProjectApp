@@ -188,7 +188,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   _uploadImageToServer(File imageFile, String filePath) async   {
-    var uri = Uri.parse('http://f6f4c0404aa6.ngrok.io');
+    var uri = Uri.parse('http://3a2fb1b59060.ngrok.io');
     var request =  http.MultipartRequest("POST", uri);
     request.files.add(
         http.MultipartFile.fromBytes(
