@@ -39,19 +39,15 @@ class _EditChoicePage extends State<EditChoicePage> {
   void _updateWidgetIndex(int idx) {
     setState(() => _widgetIndex = idx);
   }
-
   void _updateSliderValue(double value) {
     setState(() => _sliderValue = value);
   }
-
   double _getSliderValue() {
     return _sliderValue;
   }
-
   Future<File> _getSelectedImage() async {
     return widget.faceData.encodedImage;
   }
-
   @override
   Widget build(BuildContext context){
     return Scaffold(
