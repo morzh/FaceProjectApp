@@ -21,12 +21,12 @@ dependencies:
     git:
       https://github.com/shofizone/gallery_saver.git
   image_size_getter: ^1.0.0
-  dio: ^4.0.0
+#  dio: ^4.0.0
   http: ^0.13.3
   get: ^4.1.4
   flutter_speed_dial: ^4.1.0
   animate_icons: ^2.0.0
-  matrix2d: ^1.0.0
+#  matrix2d: ^1.0.0
   flutter:
     sdk: flutter
 

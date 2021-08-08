@@ -13,29 +13,62 @@ import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 
 class FaceDataController extends GetxController {
-  var faceData = FaceData().obs;
+  late final File alignedImage;
+  late final File encodedImage;
+  late final List latentEncoded;
+  late final List latentAugmented;
+  late FaceAttributes faceAttributes;
 
-  void fetchProduct(File imageFile, String filePath) async {
-    faceData.value.alignedImage = imageFile;
-    var uri = Uri.parse('http://dc4e5826ee65.ngrok.io');
-    var request =  http.MultipartRequest("POST", uri);
-    request.files.add(
-        http.MultipartFile.fromBytes(
-            'file', await imageFile.readAsBytes(),
-            filename: basename(imageFile.path),
-            contentType: new MediaType('image','jpeg')
-        )
-    );
-
-    final response = await request.send();
-    print('response:');
-    print(response.statusCode);
-    print(response.headers);
-    var jsonResponse = json.decode(response.toString());
-    print(jsonResponse);
-    var image_aligned_decoded = base64.decode(jsonResponse['ImageAligned']);
-    final File iamgeRsponseaFile = File(filePath);
-    iamgeRsponseaFile.writeAsBytesSync(await response.stream.toBytes());
-    // return iamgeRsponseaFile;
+  updateAlignedImage(File image) {
+    alignedImage = image;
+    update();
   }
+  updateEncodedImage(File image) {
+    encodedImage = image;
+    update();
+  }
+  updateLatentEncoded(List latent) {
+    latentEncoded = latent;
+    update();
+  }
+  updateLatentAugmented(List latent) {
+    latentAugmented = latent;
+    update();
+  }
+  updateFaceAttributes(FaceAttributes faceAttributes) {
+    this.faceAttributes = faceAttributes;
+  }
+  updateGender(double gender) {
+    faceAttributes.gender = gender;
+    update();
+  }
+  updateAge(double age) {
+    faceAttributes.age = age;
+    update();
+  }
+  updateGlasses(double glasses) {
+    faceAttributes.glasses = glasses;
+    update();
+  }
+  updatePitch(double pitch) {
+    faceAttributes.pitch = pitch;
+    update();
+  }
+  updateYaw(double yaw) {
+    faceAttributes.yaw = yaw;
+    update();
+  }
+  updateBeard(double beard) {
+    faceAttributes.beard = beard;
+    update();
+  }
+  updateSmile(double smile) {
+    faceAttributes.smile = smile;
+    update();
+  }
+  updateBald(double bald) {
+    faceAttributes.bald = bald;
+    update();
+  }
+
 }
