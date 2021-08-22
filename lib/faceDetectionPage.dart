@@ -5,6 +5,7 @@ import 'dart:math';
 import 'dart:core';
 import 'dart:typed_data';
 
+import 'package:face_project_app/controllers/FaceDataController.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:face_project_app/editChoicePage.dart';
@@ -16,8 +17,7 @@ import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'dart:convert';
 import 'package:face_project_app/models/faceData.dart';
-import 'package:matrix2d/matrix2d.dart';
-
+import 'package:face_project_app/controllers/FaceDataController.dart';
 
 class ImageStruct {
   Uint8List imageData;
@@ -44,6 +44,7 @@ class FaceDetectionPage extends StatefulWidget {
 }
 
 class _FaceDetectionPage extends State<FaceDetectionPage> {
+  final FaceDataController faceDataController = Get.put(FaceDataController());
   final faceDetector = GoogleMlKit.vision.faceDetector(
       FaceDetectorOptions(mode: FaceDetectorMode.fast));
   final _rng = Random();
@@ -216,6 +217,11 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     setState(() {
       _isLoading = !_isLoading;
     });
+    faceDataController.updateAlignedImage(alignedImage);
+    faceDataController.updateEncodedImage(encodedImage);
+    faceDataController.updateFaceAttributes(faceAttributes);
+    faceDataController.updateLatentAugmented(latents);
+    faceDataController.updateLatentEncoded(latents);
     return FaceData(
         alignedImage: alignedImage,
         encodedImage: encodedImage,

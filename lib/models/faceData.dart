@@ -65,6 +65,7 @@ class FaceData {
   late final List latentEncoded;
   late final List latentAugmented;
   late FaceAttributes faceAttributes;
+  // late Map face_attributes;
 
   FaceData({
     required this.alignedImage,

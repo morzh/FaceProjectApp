@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:face_project_app/controllers/FaceDataController.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:gallery_saver/gallery_saver.dart';
@@ -84,8 +86,9 @@ class EditWithSlider extends StatelessWidget {
   final ValueChanged<double> updateSliderValue;
   final ValueChanged<int> updateWidgetIndex;
   final ValueGetter<double> getSliderValue;
+  final faceDataController = Get.find<FaceDataController>();
 
-  const EditWithSlider ({
+  EditWithSlider ({
     required this.updateSliderValue,
     required this.updateWidgetIndex,
     required this.getSliderValue,
@@ -165,8 +168,9 @@ class EditWithSlider extends StatelessWidget {
 class EditChoice extends StatelessWidget {
   final ValueChanged<int> updatewidgetIndex;
   final ValueGetter<Future<File>> getImageFile;
+  final faceDataController = Get.find<FaceDataController>();
 
-  const EditChoice({
+  EditChoice({
     required this.updatewidgetIndex,
     required this.getImageFile,
     Key? key, }) : super(key: key);
