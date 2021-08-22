@@ -12,12 +12,11 @@ import 'package:get/get.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:face_project_app/face_detection/face_detection_age.dart';
 
-
 void main() {
-  runApp(MyApp());
+  runApp(FaceProjectApp());
 }
 
-class MyApp extends StatelessWidget {
+class FaceProjectApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -29,7 +28,7 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       getPages: [
         GetPage(name: "/media_gallery", page: () => MediaGalleryPage(), binding: MediaGalleryBinding()),
-        GetPage(name: "/face_detection", page: () => FaceDetectionPage()),
+        // GetPage(name: "/face_detection", page: () => FaceDetectionPage()),
         GetPage(name: "/face_augmentation", page: () => AugmentFacePage(), binding: AugmentFaceBinding()),
       ],
       initialRoute: "/media_gallery",
@@ -37,6 +36,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/*
 class MyHomePage extends StatefulWidget {
   // MyHomePage({required Key key, required this.title}) : super(key: key);
   final String title;
@@ -114,6 +114,8 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _image = imageFile;
     });
-    Get.to(FaceDetectionPage(imageFile: _image));
+    Get.to(FaceDetectionPage());
+    // Get.to(FaceDetectionPage(imageFile: _image));
   }
 }
+*/

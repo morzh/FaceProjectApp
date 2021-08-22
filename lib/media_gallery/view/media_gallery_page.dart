@@ -12,7 +12,6 @@ class MediaGalleryPage extends StatefulWidget {
   // MyHomePage({required Key key, required this.title}) : super(key: key);
   // final String title;
   // MediaGalleryPage({required this.title});
-
   @override
   _MediaGalleryPageState createState() => _MediaGalleryPageState();
 }
@@ -47,7 +46,6 @@ class _MediaGalleryPageState extends State<MediaGalleryPage> {
                   toolbarHeight: 25,
                   stretch: true,
                   pinned: false,
-                  // expandedHeight: 100,
                   title: Text("Face Project App"),
                   // floating: true
                 ),
@@ -85,6 +83,7 @@ class _MediaGalleryPageState extends State<MediaGalleryPage> {
     setState(() {
       _image = imageFile;
     });
+    // Get.to(FaceDetectionPage());
     Get.to(FaceDetectionPage(imageFile: _image));
   }
 }

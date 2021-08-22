@@ -36,8 +36,8 @@ class ImageStruct {
 }
 
 class FaceDetectionPage extends StatefulWidget {
-  late final File imageFile;
-  // FaceDetectionPage({required this.imageFile});
+  final File imageFile;
+  FaceDetectionPage({required this.imageFile});
 
   @override
   _FaceDetectionPage createState() => _FaceDetectionPage();
