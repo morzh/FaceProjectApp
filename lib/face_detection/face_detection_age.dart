@@ -5,10 +5,10 @@ import 'dart:math';
 import 'dart:core';
 import 'dart:typed_data';
 
-import 'package:face_project_app/controllers/FaceDataController.dart';
+import 'package:face_project_app/core/controllers/face_data_controller.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:face_project_app/editChoicePage.dart';
+import 'package:face_project_app/augment_face/augment_face_page.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:image_editor/image_editor.dart';
@@ -16,8 +16,8 @@ import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'dart:convert';
-import 'package:face_project_app/models/faceData.dart';
-import 'package:face_project_app/controllers/FaceDataController.dart';
+import 'package:face_project_app/core/models/face_data.dart';
+import 'package:face_project_app/core/controllers/face_data_controller.dart';
 
 class ImageStruct {
   Uint8List imageData;
@@ -36,8 +36,8 @@ class ImageStruct {
 }
 
 class FaceDetectionPage extends StatefulWidget {
-  final File imageFile;
-  FaceDetectionPage({required this.imageFile});
+  late final File imageFile;
+  // FaceDetectionPage({required this.imageFile});
 
   @override
   _FaceDetectionPage createState() => _FaceDetectionPage();
@@ -100,7 +100,8 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                                   dataFile.writeAsBytesSync(data);
                                   final FaceData faceData = await _uploadImageToServer(dataFile, filePathFaceDataBase);
                                   // faceData.printLatents();
-                                  Get.off(() => EditChoicePage(faceData: faceData));
+                                  Get.off(() => AugmentFacePage());
+                                  // Get.off(() => AugmentFacePage(faceData: faceData));
                                 },
                               child: Container(
                               decoration: BoxDecoration(

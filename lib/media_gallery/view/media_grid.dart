@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:face_project_app/faceDetectionPage.dart';
+import 'package:face_project_app/face_detection/face_detection_age.dart';
 
 class MediaGrid extends StatefulWidget {
   @override

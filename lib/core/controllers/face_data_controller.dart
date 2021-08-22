@@ -6,7 +6,7 @@ import 'dart:core';
 
 import 'package:path/path.dart';
 import 'package:get/state_manager.dart';
-import 'package:face_project_app/models/faceData.dart';
+import 'package:face_project_app/core/models/face_data.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:http_parser/http_parser.dart';

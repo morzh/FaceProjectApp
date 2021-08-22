@@ -1,12 +1,16 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:face_project_app/augment_face/augment_face_page.dart';
+import 'package:face_project_app/augment_face/binding/augment_face_binding.dart';
+import 'package:face_project_app/media_gallery/binding/media_gallery_binding.dart';
+import 'package:face_project_app/media_gallery/view/media_gallery_page.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:face_project_app/mediaGrid.dart';
+import 'package:face_project_app/media_gallery/view/media_grid.dart';
 import 'package:get/get.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:face_project_app/faceDetectionPage.dart';
+import 'package:face_project_app/face_detection/face_detection_age.dart';
 
 
 void main() {
@@ -23,7 +27,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData.from(colorScheme: ColorScheme.light()),
       darkTheme: ThemeData.from(colorScheme: ColorScheme.dark()),
       themeMode: ThemeMode.system,
-      home: MyHomePage(title: 'Face Flow App'),
+      getPages: [
+        GetPage(name: "/media_gallery", page: () => MediaGalleryPage(), binding: MediaGalleryBinding()),
+        GetPage(name: "/face_detection", page: () => FaceDetectionPage()),
+        GetPage(name: "/face_augmentation", page: () => AugmentFacePage(), binding: AugmentFaceBinding()),
+      ],
+      initialRoute: "/media_gallery",
     );
   }
 }

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:matrix2d/matrix2d.dart';
 
 class FaceAttributes {
   late double gender;

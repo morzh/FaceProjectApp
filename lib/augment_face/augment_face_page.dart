@@ -2,15 +2,15 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:face_project_app/controllers/FaceDataController.dart';
+import 'package:face_project_app/core/controllers/face_data_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:gallery_saver/gallery_saver.dart';
-import 'animatedIndexStack.dart';
-import 'package:face_project_app/models/faceData.dart';
+import '../animatedIndexStack.dart';
+import 'package:face_project_app/core/models/face_data.dart';
 
 List<AssetImage> _editChoiceButtons = [
   AssetImage('assets/buttons_images/head_left_right.png'),
@@ -25,18 +25,19 @@ List<AssetImage> _editChoiceButtons = [
   AssetImage('assets/buttons_images/share.png'),
 ];
 
-class EditChoicePage extends StatefulWidget {
-  FaceData faceData;
-  EditChoicePage({
-    required this.faceData
-  });
+class AugmentFacePage extends StatefulWidget {
+  late FaceData faceData;
+  // EditChoicePage({
+  //   required this.faceData
+  // });
   @override
-  _EditChoicePage createState() => _EditChoicePage();
+  _AugmentFacePage createState() => _AugmentFacePage();
 }
 
-class _EditChoicePage extends State<EditChoicePage> {
+class _AugmentFacePage extends State<AugmentFacePage> {
   int _widgetIndex = 0;
   double _sliderValue = 0.0;
+  final faceDataController = Get.find<FaceDataController>();
 
   void _updateWidgetIndex(int idx) {
     setState(() => _widgetIndex = idx);
@@ -58,7 +59,8 @@ class _EditChoicePage extends State<EditChoicePage> {
           children: <Widget>[
             Expanded(
                 child: PhotoView(
-                  imageProvider: Image.file(widget.faceData.encodedImage).image,
+                  imageProvider: Image.file(faceDataController.encodedImage).image,
+                  // imageProvider: Image.file(widget.faceData.encodedImage).image,
                 )
             ),
             AnimatedIndexedStack(
