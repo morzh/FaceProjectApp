@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:face_project_app/face_detection/face_detection_age.dart';
+import 'package:face_project_app/face_detection/face_detection_page.dart';
+import 'package:face_project_app/core/controllers/face_data_controller.dart';
+import 'package:face_project_app/core/controllers/face_detection_controller.dart';
 
 class MediaGrid extends StatefulWidget {
   @override
@@ -12,6 +14,9 @@ class MediaGrid extends StatefulWidget {
 }
 
 class _MediaGridState extends State<MediaGrid> {
+  final _faceDataController = Get.find<FaceDataController>();
+  final _faceDetectionController = Get.find<FaceDetectionController>();
+
   List<Widget> _mediaList = [];
   int currentPage = 0;
   int lastPage = 0;
@@ -55,9 +60,11 @@ class _MediaGridState extends State<MediaGrid> {
       List<AssetPathEntity> albums = await PhotoManager.getAssetPathList(onlyAll: true, type: RequestType.image);
       print(albums);
       List<AssetEntity> media =  await albums[0].getAssetListPaged(currentPage, 60);
-      print(media);
+      // print(media);
       List<Widget> temp = [];
       for (var asset in media) {
+        final assetFile = (await asset.file)!;
+        if (await _faceDetectionController.isContainFace(assetFile)) {
         temp.add(
             FutureBuilder(
                 future: asset.thumbData,
@@ -65,8 +72,8 @@ class _MediaGridState extends State<MediaGrid> {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return GestureDetector(
                         onTap: () async {
-                          File file = (await asset.file)!;
-                          Get.to(FaceDetectionPage(imageFile: file,));
+                          _faceDataController.sourceImage.value = assetFile;
+                          Get.to(FaceDetectionPage());
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -84,6 +91,7 @@ class _MediaGridState extends State<MediaGrid> {
                 }
             )
         );
+        }
       }
       setState(() {
         _mediaList.addAll(temp);

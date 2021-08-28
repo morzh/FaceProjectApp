@@ -1,16 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:face_project_app/face_detection/binding/face_detection_page_binding.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:face_project_app/augment_face/augment_face_page.dart';
 import 'package:face_project_app/augment_face/binding/augment_face_binding.dart';
-import 'package:face_project_app/media_gallery/binding/media_gallery_binding.dart';
+import 'package:face_project_app/media_gallery/binding/media_gallery_page_binding.dart';
 import 'package:face_project_app/media_gallery/view/media_gallery_page.dart';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:face_project_app/media_gallery/view/media_grid.dart';
-import 'package:get/get.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:face_project_app/face_detection/face_detection_age.dart';
+import 'face_detection/face_detection_page.dart';
 
 void main() {
   runApp(FaceProjectApp());
@@ -27,8 +25,8 @@ class FaceProjectApp extends StatelessWidget {
       darkTheme: ThemeData.from(colorScheme: ColorScheme.dark()),
       themeMode: ThemeMode.system,
       getPages: [
-        GetPage(name: "/media_gallery", page: () => MediaGalleryPage(), binding: MediaGalleryBinding()),
-        // GetPage(name: "/face_detection", page: () => FaceDetectionPage()),
+        GetPage(name: "/media_gallery", page: () => MediaGalleryPage(), binding: MediaGalleryPageBinding()),
+        GetPage(name: "/face_detection", page: () => FaceDetectionPage(), binding: FaceDetectionBinding()),
         GetPage(name: "/face_augmentation", page: () => AugmentFacePage(), binding: AugmentFaceBinding()),
       ],
       initialRoute: "/media_gallery",

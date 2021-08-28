@@ -13,28 +13,16 @@ import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 
 class FaceDataController extends GetxController {
-  late final File alignedImage;
-  late final File encodedImage;
-  late final List latentEncoded;
-  late final List latentAugmented;
+  Rx<File> sourceImage = File('').obs;
+  late final File croppedImage;
+  Rx<File> alignedImage = File('').obs;
+  Rx<File> encodedImage = File('').obs;
+  // late final List latentEncoded;
+  // late final List latentAugmented;
+  final latentEncoded = Rx<List<dynamic>>([]);
+  final latentAugmented = Rx<List<dynamic>>([]);
   late FaceAttributes faceAttributes;
 
-  updateAlignedImage(File image) {
-    alignedImage = image;
-    update();
-  }
-  updateEncodedImage(File image) {
-    encodedImage = image;
-    update();
-  }
-  updateLatentEncoded(List latent) {
-    latentEncoded = latent;
-    update();
-  }
-  updateLatentAugmented(List latent) {
-    latentAugmented = latent;
-    update();
-  }
   updateFaceAttributes(FaceAttributes faceAttributes) {
     this.faceAttributes = faceAttributes;
   }

@@ -10,7 +10,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import '../animatedIndexStack.dart';
-import 'package:face_project_app/core/models/face_data.dart';
+// import 'package:face_project_app/core/models/face_data.dart';
 
 List<AssetImage> _editChoiceButtons = [
   AssetImage('assets/buttons_images/head_left_right.png'),
@@ -26,10 +26,7 @@ List<AssetImage> _editChoiceButtons = [
 ];
 
 class AugmentFacePage extends StatefulWidget {
-  late FaceData faceData;
-  // EditChoicePage({
-  //   required this.faceData
-  // });
+  final _facedataController = Get.find<FaceDataController>();
   @override
   _AugmentFacePage createState() => _AugmentFacePage();
 }
@@ -49,7 +46,7 @@ class _AugmentFacePage extends State<AugmentFacePage> {
     return _sliderValue;
   }
   Future<File> _getSelectedImage() async {
-    return widget.faceData.encodedImage;
+    return widget._facedataController.encodedImage.value;
   }
   @override
   Widget build(BuildContext context){
@@ -59,8 +56,7 @@ class _AugmentFacePage extends State<AugmentFacePage> {
           children: <Widget>[
             Expanded(
                 child: PhotoView(
-                  imageProvider: Image.file(faceDataController.encodedImage).image,
-                  // imageProvider: Image.file(widget.faceData.encodedImage).image,
+                  imageProvider: Image.file(widget._facedataController.encodedImage.value).image,
                 )
             ),
             AnimatedIndexedStack(

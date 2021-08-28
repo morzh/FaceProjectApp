@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'dart:ui';
+
 class FaceAttributes {
   late double gender;
   late double glasses;
@@ -59,23 +61,25 @@ class FaceAttributes {
 }
 
 class FaceData {
-  late final File alignedImage;
-  late final File encodedImage;
-  late final List latentEncoded;
-  late final List latentAugmented;
+  late final File source_image;
+  late final Rect face_bbox;
+  late final File aligned_face;
+  late final File encoded_face;
+  late final List latent;
+  late final List latent_augmented;
   late FaceAttributes faceAttributes;
   // late Map face_attributes;
 
   FaceData({
-    required this.alignedImage,
-    required this.encodedImage,
+    required this.aligned_face,
+    required this.encoded_face,
     required this.faceAttributes,
-    required this.latentEncoded,
-    required this.latentAugmented
+    required this.latent,
+    required this.latent_augmented
   });
 
   printLatents() {
-    print(this.latentEncoded);
-    print(this.latentAugmented);
+    print(this.latent);
+    print(this.latent_augmented);
   }
 }

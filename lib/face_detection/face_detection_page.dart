@@ -6,6 +6,7 @@ import 'dart:core';
 import 'dart:typed_data';
 
 import 'package:face_project_app/core/controllers/face_data_controller.dart';
+import 'package:face_project_app/core/controllers/face_detection_controller.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:face_project_app/augment_face/augment_face_page.dart';
@@ -18,6 +19,7 @@ import 'package:get/get.dart';
 import 'dart:convert';
 import 'package:face_project_app/core/models/face_data.dart';
 import 'package:face_project_app/core/controllers/face_data_controller.dart';
+import 'package:face_project_app/face_detection/binding/face_detection_page_binding.dart';
 
 class ImageStruct {
   Uint8List imageData;
@@ -36,17 +38,13 @@ class ImageStruct {
 }
 
 class FaceDetectionPage extends StatefulWidget {
-  final File imageFile;
-  FaceDetectionPage({required this.imageFile});
-
+  final _faceDataController = Get.find<FaceDataController>();
+  final _faceDetectionController = Get.find<FaceDetectionController>();
   @override
   _FaceDetectionPage createState() => _FaceDetectionPage();
 }
 
 class _FaceDetectionPage extends State<FaceDetectionPage> {
-  final FaceDataController faceDataController = Get.put(FaceDataController());
-  final faceDetector = GoogleMlKit.vision.faceDetector(
-      FaceDetectorOptions(mode: FaceDetectorMode.fast));
   final _rng = Random();
   late final imageSize;
   bool _isLoading = false;
@@ -98,7 +96,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                                   final File dataFile = File(filePathImageSource);
                                   if (dataFile.existsSync()) { dataFile.deleteSync(); }
                                   dataFile.writeAsBytesSync(data);
-                                  final FaceData faceData = await _uploadImageToServer(dataFile, filePathFaceDataBase);
+                                  await _uploadImageToServer(dataFile, filePathFaceDataBase);
                                   // faceData.printLatents();
                                   Get.off(() => AugmentFacePage());
                                   // Get.off(() => AugmentFacePage(faceData: faceData));
@@ -146,23 +144,12 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   Future detectFaces() async {
-    print('face detector started');
-    final InputImage mlKitImage = InputImage.fromFile(widget.imageFile);
-    final List<Face> detectedFaces = await faceDetector.processImage(mlKitImage);
-    print('face detector ended');
-    // faceDetector.close();
-    final List<Face> filteredFaces = [];
-    for (var face in detectedFaces) {
-      if (face.boundingBox.longestSide / face.boundingBox.shortestSide > 2) {
-        continue;
-      }
-      filteredFaces.add(face);
-    }
-  return filteredFaces;
+    final image = widget._faceDataController.sourceImage.value;
+    return await widget._faceDetectionController.detectFacesBoxes(image);
   }
 
   Future _loadData(BuildContext context) async {
-    final imageData = await widget.imageFile.readAsBytes();
+    final imageData = await widget._faceDataController.sourceImage.value.readAsBytes();
     final decodedImage = await decodeImageFromList(imageData);
 
     double imageWidth = decodedImage.width.toDouble();
@@ -189,8 +176,8 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     );
   }
 
-  _uploadImageToServer(File imageFile, String filePath) async   {
-    var uri = Uri.parse('http://3a2fb1b59060.ngrok.io');
+  _uploadImageToServer(File imageFile, String filePath) async {
+    var uri = Uri.parse('http://6abe-34-78-52-237.ngrok.io');
     var request =  http.MultipartRequest("POST", uri);
     request.files.add(
         http.MultipartFile.fromBytes(
@@ -218,18 +205,11 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     setState(() {
       _isLoading = !_isLoading;
     });
-    faceDataController.updateAlignedImage(alignedImage);
-    faceDataController.updateEncodedImage(encodedImage);
-    faceDataController.updateFaceAttributes(faceAttributes);
-    faceDataController.updateLatentAugmented(latents);
-    faceDataController.updateLatentEncoded(latents);
-    return FaceData(
-        alignedImage: alignedImage,
-        encodedImage: encodedImage,
-        faceAttributes: faceAttributes,
-        latentEncoded: latents,
-        latentAugmented: latents
-    );
+    widget._faceDataController.alignedImage.value = alignedImage;
+    widget._faceDataController.encodedImage.value = encodedImage;
+    widget._faceDataController.updateFaceAttributes(faceAttributes);
+    widget._faceDataController.latentEncoded.value = latents;
+    widget._faceDataController.latentAugmented.value = latents;
   }
 }
 
