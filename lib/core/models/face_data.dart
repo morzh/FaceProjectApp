@@ -61,25 +61,34 @@ class FaceAttributes {
 }
 
 class FaceData {
-  late final File source_image;
-  late final Rect face_bbox;
-  late final File aligned_face;
-  late final File encoded_face;
+  late final File sourceImage;
+  late final Rect faceBoundingBox;
+  late final File alignedFace;
+  late final File encodedFace;
   late final List latent;
-  late final List latent_augmented;
+  late final List latentAugmented;
   late FaceAttributes faceAttributes;
-  // late Map face_attributes;
+  late final Map<String, dynamic> faceAttributesMap;
+  late final List<File> augmentedImages;
 
   FaceData({
-    required this.aligned_face,
-    required this.encoded_face,
+    required this.alignedFace,
+    required this.encodedFace,
     required this.faceAttributes,
     required this.latent,
-    required this.latent_augmented
+    required this.latentAugmented
   });
+
+  readAugmentedImages(String filepath, double imagesNumber) {
+    for(var idx = 0; idx < imagesNumber; ++idx) {
+      augmentedImages.add(File(filepath + '/' +  idx.toString() + '.jpg'));
+    }
+  }
+
+
 
   printLatents() {
     print(this.latent);
-    print(this.latent_augmented);
+    print(this.latentAugmented);
   }
 }

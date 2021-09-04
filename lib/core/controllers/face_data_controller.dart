@@ -22,6 +22,14 @@ class FaceDataController extends GetxController {
   final latentEncoded = Rx<List<dynamic>>([]);
   final latentAugmented = Rx<List<dynamic>>([]);
   late FaceAttributes faceAttributes;
+  late Map faceAttributesMap;
+  Rx<List<File>> augmentedFaces = Rx<List<File>>([]);
+
+  readAugmentedImages(String filepath, double imagesNumber) {
+    for(int idx = 0; idx < imagesNumber; ++idx) {
+      augmentedFaces.value.add(File(filepath + idx.toString() + '.jpg'));
+    }
+  }
 
   updateFaceAttributes(FaceAttributes faceAttributes) {
     this.faceAttributes = faceAttributes;

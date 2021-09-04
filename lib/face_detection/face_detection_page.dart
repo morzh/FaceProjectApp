@@ -210,6 +210,8 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     widget._faceDataController.updateFaceAttributes(faceAttributes);
     widget._faceDataController.latentEncoded.value = latents;
     widget._faceDataController.latentAugmented.value = latents;
+    widget._faceDataController.faceAttributesMap = await jsonResponse["faceAttributes"];
+    widget._faceDataController.readAugmentedImages('assets/image_sequence/young_old/', 10);
   }
 }
 
