@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 
 abstract class HttpService{
   void init();
 
-  Future<Response> getRequest(String url);
+  Future<Response> imageRequest(String url, String key, File image);
+  Future<Response> latentFaceAttributesRequest(String url, String key, File image);
+  Future<Response> request(String url);
 }

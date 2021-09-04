@@ -1,12 +1,10 @@
 import 'dart:ui';
-
 import 'package:face_project_app/core/controllers/face_data_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:gallery_saver/gallery_saver.dart';
-
 
 List<AssetImage> _editChoiceButtons = [
   AssetImage('assets/buttons_images/head_left_right.png'),
@@ -20,7 +18,6 @@ List<AssetImage> _editChoiceButtons = [
   AssetImage('assets/buttons_images/save.png'),
   AssetImage('assets/buttons_images/share.png'),
 ];
-
 List<int> firstRowIndices = [0, 1, 2, 3];
 List<int> secondRowIndices = [4, 5, 6, 7];
 
@@ -42,45 +39,21 @@ class EditChoiceButtons extends StatelessWidget {
                 defaultColumnWidth: FixedColumnWidth(80),
                 children: [
                   TableRow(
-                      children: [
-                        TextButton(
+                      children: firstRowIndices.map((i) =>
+                          TextButton(
                             onPressed: () => Get.toNamed("/face_augmentation"),
-                            child: Image(image: _editChoiceButtons[0])
-                        ),
-                        TextButton(
-                            onPressed: () => Get.toNamed("/face_augmentation"),
-                            child: Image(image: _editChoiceButtons[1])
-                        ),
-                        TextButton(
-                            onPressed: () => Get.toNamed("/face_augmentation"),
-                            child: Image(image: _editChoiceButtons[2])
-                        ),
-                        TextButton(
-                            onPressed: () => Get.toNamed("/face_augmentation"),
-                            child: Image(image: _editChoiceButtons[3])
-                        )
-                      ]
+                            child: Image(image: _editChoiceButtons[i])
+                          )
+                      ).toList()
                   ),
                   TableRow(
-                      children: [
-                        TextButton(
-                            onPressed: () => Get.toNamed("/face_augmentation"),
-                            child: Image(image: _editChoiceButtons[4])
-                        ),
-                        TextButton(
-                            onPressed: () => Get.toNamed("/face_augmentation"),
-                            child: Image(image: _editChoiceButtons[5])
-                        ),
-                        TextButton(
-                            onPressed: () => Get.toNamed("/face_augmentation"),
-                            child: Image(image: _editChoiceButtons[6])
-                        ),
-                        TextButton(
-                            onPressed: () => Get.toNamed("/face_augmentation"),
-                            child: Image(image: _editChoiceButtons[7])
-                        ),
-                      ]
-                  )
+                      children: secondRowIndices.map((i) =>
+                          TextButton(
+                              onPressed: () => Get.toNamed("/face_augmentation"),
+                              child: Image(image: _editChoiceButtons[i])
+                          )
+                      ).toList()
+                  ),
                 ],
               )
           ),
@@ -93,7 +66,6 @@ class EditChoiceButtons extends StatelessWidget {
                     children: [
                       TextButton(
                           onPressed: () async {
-                            // final File imageFile = await getImageFile();
                             await GallerySaver.saveImage(_faceDataController.encodedImage.value.path);
                             ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
@@ -119,7 +91,6 @@ class EditChoiceButtons extends StatelessWidget {
                       ),
                       TextButton(
                           onPressed: () async {
-                            // final File imageFile = await getImageFile();
                             ShareExtend.share(_faceDataController.encodedImage.value.path, "file");
                           },
                           child: Image(image: _editChoiceButtons[9])),
