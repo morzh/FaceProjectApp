@@ -9,7 +9,7 @@ import 'package:face_project_app/core/controllers/face_data_controller.dart';
 import 'package:face_project_app/core/controllers/face_detection_controller.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:face_project_app/augment_face/augment_face_page.dart';
+import 'package:face_project_app/face_choice/face_edit_choice_page.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:image_editor/image_editor.dart';
@@ -17,7 +17,6 @@ import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'dart:convert';
-import 'package:face_project_app/core/models/face_data.dart';
 import 'package:face_project_app/core/controllers/face_data_controller.dart';
 import 'package:face_project_app/face_detection/binding/face_detection_page_binding.dart';
 
@@ -98,8 +97,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                                   dataFile.writeAsBytesSync(data);
                                   await _uploadImageToServer(dataFile, filePathFaceDataBase);
                                   // faceData.printLatents();
-                                  Get.off(() => AugmentFacePage());
-                                  // Get.off(() => AugmentFacePage(faceData: faceData));
+                                  Get.off(() => AugmentChoicePage());
                                 },
                               child: Container(
                               decoration: BoxDecoration(
@@ -177,7 +175,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   _uploadImageToServer(File imageFile, String filePath) async {
-    var uri = Uri.parse('http://6abe-34-78-52-237.ngrok.io');
+    var uri = Uri.parse('http://ec0c-104-154-216-127.ngrok.io');
     var request =  http.MultipartRequest("POST", uri);
     request.files.add(
         http.MultipartFile.fromBytes(
@@ -193,7 +191,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     // print(response.headers);
     final jsonResponse = json.decode(await response.stream.bytesToString());
     // print(jsonResponse["faceAttributes"]);
-    final FaceAttributes faceAttributes = FaceAttributes.fromJson(await jsonResponse["faceAttributes"]);
+    // final FaceAttributes faceAttributes = FaceAttributes.fromJson(await jsonResponse["faceAttributes"]);
     final imageAlignedDecoded = base64.decode(await jsonResponse["ImageAligned"]);
     final imageEncodedDecoded = base64.decode(await jsonResponse["ImageEncoded"]);
     final latents = jsonResponse["latent"];
@@ -207,11 +205,11 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     });
     widget._faceDataController.alignedImage.value = alignedImage;
     widget._faceDataController.encodedImage.value = encodedImage;
-    widget._faceDataController.updateFaceAttributes(faceAttributes);
+    // widget._faceDataController.updateFaceAttributes(faceAttributes);
     widget._faceDataController.latentEncoded.value = latents;
     widget._faceDataController.latentAugmented.value = latents;
     widget._faceDataController.faceAttributesMap = await jsonResponse["faceAttributes"];
-    widget._faceDataController.readAugmentedImages('assets/image_sequence/young_old/', 10);
+    widget._faceDataController.readAugmentedImages('assets/image_sequences/young_old/', 10);
   }
 }
 

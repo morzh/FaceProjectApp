@@ -25,28 +25,24 @@ List<AssetImage> _editChoiceButtons = [
   AssetImage('assets/buttons_images/share.png'),
 ];
 
-class AugmentFacePage extends StatefulWidget {
-  final _facedataController = Get.find<FaceDataController>();
+class AugmentChoicePage extends StatefulWidget {
+
   @override
-  _AugmentFacePage createState() => _AugmentFacePage();
+  _AugmentChoiceFacePage createState() => _AugmentChoiceFacePage();
 }
 
-class _AugmentFacePage extends State<AugmentFacePage> {
+class _AugmentChoiceFacePage extends State<AugmentChoicePage> {
   int _widgetIndex = 0;
   double _sliderValue = 0.0;
+  final _facedataController = Get.find<FaceDataController>();
   final faceDataController = Get.find<FaceDataController>();
 
   void _updateWidgetIndex(int idx) {
     setState(() => _widgetIndex = idx);
   }
-  void _updateSliderValue(double value) {
-    setState(() => _sliderValue = value);
-  }
-  double _getSliderValue() {
-    return _sliderValue;
-  }
+
   Future<File> _getSelectedImage() async {
-    return widget._facedataController.encodedImage.value;
+    return _facedataController.encodedImage.value;
   }
   @override
   Widget build(BuildContext context){
@@ -56,26 +52,16 @@ class _AugmentFacePage extends State<AugmentFacePage> {
           children: <Widget>[
             Expanded(
                 child: PhotoView(
-                  imageProvider: Image.file(widget._facedataController.encodedImage.value).image,
+                  imageProvider: Image.file(_facedataController.encodedImage.value).image,
                 )
             ),
-            AnimatedIndexedStack(
-                  index: _widgetIndex,
-                  // alignment: Alignment.bottomCenter,
-                  children: <Widget>[
-                EditChoice(
-                    updatewidgetIndex: _updateWidgetIndex,
-                    getImageFile: _getSelectedImage,
-                ),
-                EditWithSlider(
-                  updateWidgetIndex: _updateWidgetIndex,
-                  updateSliderValue: _updateSliderValue,
-                  getSliderValue: _getSliderValue,),
+            EditChoice(
+                updatewidgetIndex: _updateWidgetIndex,
+                getImageFile: _getSelectedImage,
+            ),
               ]
               ),
-          ],
         ),
-      ),
     );
   }
 }
@@ -190,19 +176,19 @@ class EditChoice extends StatelessWidget {
                     TableRow(
                       children: [
                         TextButton(
-                          onPressed: () => updatewidgetIndex(1),
+                          onPressed: () => Get.toNamed("/face_augmentation"),
                             child: Image(image: _editChoiceButtons[0])
                         ),
                         TextButton(
-                            onPressed: () => updatewidgetIndex(1),
+                            onPressed: () => Get.toNamed("/face_augmentation"),
                             child: Image(image: _editChoiceButtons[1])
                         ),
                         TextButton(
-                            onPressed: () => updatewidgetIndex(1),
+                            onPressed: () => Get.toNamed("/face_augmentation"),
                             child: Image(image: _editChoiceButtons[2])
                         ),
                         TextButton(
-                            onPressed: () => updatewidgetIndex(1),
+                            onPressed: () => Get.toNamed("/face_augmentation"),
                             child: Image(image: _editChoiceButtons[3])
                         )
                         ]
@@ -210,19 +196,19 @@ class EditChoice extends StatelessWidget {
                     TableRow(
                       children: [
                         TextButton(
-                            onPressed: () => updatewidgetIndex(1),
+                            onPressed: () => Get.toNamed("/face_augmentation"),
                             child: Image(image: _editChoiceButtons[4])
                         ),
                         TextButton(
-                            onPressed: () => updatewidgetIndex(1),
+                            onPressed: () => Get.toNamed("/face_augmentation"),
                             child: Image(image: _editChoiceButtons[5])
                         ),
                         TextButton(
-                            onPressed: () => updatewidgetIndex(1),
+                            onPressed: () => Get.toNamed("/face_augmentation"),
                             child: Image(image: _editChoiceButtons[6])
                         ),
                         TextButton(
-                            onPressed: () => updatewidgetIndex(1),
+                            onPressed: () => Get.toNamed("/face_augmentation"),
                             child: Image(image: _editChoiceButtons[7])
                         ),
                       ]

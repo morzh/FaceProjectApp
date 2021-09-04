@@ -1,11 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:face_project_app/face_choice/face_edit_choice_page.dart';
 import 'package:face_project_app/face_detection/binding/face_detection_page_binding.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:face_project_app/augment_face/augment_face_page.dart';
-import 'package:face_project_app/augment_face/binding/augment_face_binding.dart';
+import 'package:face_project_app/augement_face/augment_face_page.dart';
+import 'package:face_project_app/augement_face/binding/augment_face_binding.dart';
+import 'package:face_project_app/face_choice/face_edit_choice_page.dart';
+import 'package:face_project_app/face_choice/binding/augment_face_binding.dart';
 import 'package:face_project_app/media_gallery/binding/media_gallery_page_binding.dart';
 import 'package:face_project_app/media_gallery/view/media_gallery_page.dart';
 import 'face_detection/face_detection_page.dart';
@@ -27,6 +30,7 @@ class FaceProjectApp extends StatelessWidget {
       getPages: [
         GetPage(name: "/media_gallery", page: () => MediaGalleryPage(), binding: MediaGalleryPageBinding()),
         GetPage(name: "/face_detection", page: () => FaceDetectionPage(), binding: FaceDetectionBinding()),
+        GetPage(name: "/face_edit_choice", page: () => AugmentChoicePage(), binding: AugmentChoiceFaceBinding()),
         GetPage(name: "/face_augmentation", page: () => AugmentFacePage(), binding: AugmentFaceBinding()),
       ],
       initialRoute: "/media_gallery",

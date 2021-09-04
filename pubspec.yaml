@@ -58,6 +58,16 @@ flutter:
     - assets/buttons_images/head_expression.png
     - assets/buttons_images/save.png
     - assets/buttons_images/share.png
+    - assets/image_sequences/young_old/0.jpg
+    - assets/image_sequences/young_old/1.jpg
+    - assets/image_sequences/young_old/2.jpg
+    - assets/image_sequences/young_old/3.jpg
+    - assets/image_sequences/young_old/4.jpg
+    - assets/image_sequences/young_old/5.jpg
+    - assets/image_sequences/young_old/6.jpg
+    - assets/image_sequences/young_old/7.jpg
+    - assets/image_sequences/young_old/8.jpg
+    - assets/image_sequences/young_old/9.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
