@@ -52,9 +52,8 @@ class HttpServiceNgrok implements HttpService{
   }
 
   @override
-  Future<Response> latentFaceAttributesRequest(String url, String key, File image) {
+  Future<Response> latentFaceAttributesRequest(String url, String key, List latent, Map attributes) {
     // TODO: implement latentFaceAttributesRequest
     throw UnimplementedError();
   }
-
 }
