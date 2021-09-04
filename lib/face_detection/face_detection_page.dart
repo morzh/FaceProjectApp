@@ -2,21 +2,21 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:math';
+import 'dart:convert';
 import 'dart:core';
-import 'dart:typed_data';
 
-import 'package:face_project_app/core/controllers/face_data_controller.dart';
-import 'package:face_project_app/core/controllers/face_detection_controller.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:face_project_app/face_choice/face_edit_choice_page.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:image_editor/image_editor.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
-import 'dart:convert';
+
+import 'package:face_project_app/core/controllers/face_data_controller.dart';
+import 'package:face_project_app/face_choice/face_edit_choice_page.dart';
+import 'package:face_project_app/core/controllers/face_detection_controller.dart';
 import 'package:face_project_app/core/controllers/face_data_controller.dart';
 import 'package:face_project_app/face_detection/binding/face_detection_page_binding.dart';
 
@@ -37,13 +37,13 @@ class ImageStruct {
 }
 
 class FaceDetectionPage extends StatefulWidget {
-  final _faceDataController = Get.find<FaceDataController>();
-  final _faceDetectionController = Get.find<FaceDetectionController>();
   @override
   _FaceDetectionPage createState() => _FaceDetectionPage();
 }
 
 class _FaceDetectionPage extends State<FaceDetectionPage> {
+  final _faceDataController = Get.find<FaceDataController>();
+  final _faceDetectionController = Get.find<FaceDetectionController>();  
   final _rng = Random();
   late final imageSize;
   bool _isLoading = false;
@@ -86,17 +86,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
                                   setState(() {
                                     _isLoading = !_isLoading;
                                   });
-                                  final String random = (_rng.nextInt(1000000)).toString();
-                                  final Uint8List data = await _cropImage(snapshot.data[0], face.boundingBox);
-                                  final String tempPath = (await getTemporaryDirectory()).path;
-                                  final String filePathImageSource = tempPath + '/' + random+'.jpg';
-                                  final String filePathFaceDataBase = tempPath + '/' + random;
-                                  print(filePathImageSource);
-                                  final File dataFile = File(filePathImageSource);
-                                  if (dataFile.existsSync()) { dataFile.deleteSync(); }
-                                  dataFile.writeAsBytesSync(data);
-                                  await _uploadImageToServer(dataFile, filePathFaceDataBase);
-                                  // faceData.printLatents();
+                                  await _processImage(snapshot.data[0], face.boundingBox);
                                   Get.off(() => AugmentChoicePage());
                                 },
                               child: Container(
@@ -142,12 +132,12 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   Future detectFaces() async {
-    final image = widget._faceDataController.sourceImage.value;
-    return await widget._faceDetectionController.detectFacesBoxes(image);
+    final image = _faceDataController.sourceImage.value;
+    return await _faceDetectionController.detectFacesBoxes(image);
   }
 
   Future _loadData(BuildContext context) async {
-    final imageData = await widget._faceDataController.sourceImage.value.readAsBytes();
+    final imageData = await _faceDataController.sourceImage.value.readAsBytes();
     final decodedImage = await decodeImageFromList(imageData);
 
     double imageWidth = decodedImage.width.toDouble();
@@ -175,7 +165,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   _uploadImageToServer(File imageFile, String filePath) async {
-    var uri = Uri.parse('http://ec0c-104-154-216-127.ngrok.io');
+    var uri = Uri.parse('http://0b80-104-154-216-127.ngrok.io');
     var request =  http.MultipartRequest("POST", uri);
     request.files.add(
         http.MultipartFile.fromBytes(
@@ -190,12 +180,9 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     print(response.statusCode);
     // print(response.headers);
     final jsonResponse = json.decode(await response.stream.bytesToString());
-    // print(jsonResponse["faceAttributes"]);
-    // final FaceAttributes faceAttributes = FaceAttributes.fromJson(await jsonResponse["faceAttributes"]);
     final imageAlignedDecoded = base64.decode(await jsonResponse["ImageAligned"]);
     final imageEncodedDecoded = base64.decode(await jsonResponse["ImageEncoded"]);
     final latents = jsonResponse["latent"];
-    // faceAttributes.printAttributes();
     final File alignedImage = File(filePath + '_aligned.jpg');
     final File encodedImage = File(filePath + '_encoded.jpg');
     alignedImage.writeAsBytesSync(imageAlignedDecoded.toList());
@@ -203,13 +190,29 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     setState(() {
       _isLoading = !_isLoading;
     });
-    widget._faceDataController.alignedImage.value = alignedImage;
-    widget._faceDataController.encodedImage.value = encodedImage;
-    // widget._faceDataController.updateFaceAttributes(faceAttributes);
-    widget._faceDataController.latentEncoded.value = latents;
-    widget._faceDataController.latentAugmented.value = latents;
-    widget._faceDataController.faceAttributesMap = await jsonResponse["faceAttributes"];
-    widget._faceDataController.readAugmentedImages('assets/image_sequences/young_old/', 10);
+    _faceDataController.alignedImage.value = alignedImage;
+    _faceDataController.encodedImage.value = encodedImage;
+    _faceDataController.latentEncoded.value = latents;
+    _faceDataController.latentAugmented.value = latents;
+    _faceDataController.faceAttributesMap = await jsonResponse["faceAttributes"];
+    _faceDataController.readAugmentedImages('assets/image_sequences/young_old/', 10);
+  }
+
+  Future _processImage(snapshotData, faceBoundingBox) async {
+    final String random = (_rng.nextInt(1000000)).toString();
+    final Uint8List data = await _cropImage(snapshotData, faceBoundingBox);
+    final String tempPath = (await getTemporaryDirectory()).path;
+    final String filePathImageSource = tempPath + '/' + random+'.jpg';
+    final String filePathFaceDataBase = tempPath + '/' + random;
+    // print(filePathImageSource);
+
+    final File dataFile = File(filePathImageSource);
+    if (dataFile.existsSync()) {
+      dataFile.deleteSync();
+    }
+
+    dataFile.writeAsBytesSync(data);
+    await _uploadImageToServer(dataFile, filePathFaceDataBase);
   }
 }
 

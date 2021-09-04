@@ -9,8 +9,7 @@ import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:gallery_saver/gallery_saver.dart';
-import '../animatedIndexStack.dart';
-// import 'package:face_project_app/core/models/face_data.dart';
+// import '../animatedIndexStack.dart';
 
 List<AssetImage> _editChoiceButtons = [
   AssetImage('assets/buttons_images/head_left_right.png'),
@@ -26,7 +25,6 @@ List<AssetImage> _editChoiceButtons = [
 ];
 
 class AugmentChoicePage extends StatefulWidget {
-
   @override
   _AugmentChoiceFacePage createState() => _AugmentChoiceFacePage();
 }
@@ -62,89 +60,6 @@ class _AugmentChoiceFacePage extends State<AugmentChoicePage> {
               ]
               ),
         ),
-    );
-  }
-}
-
-class EditWithSlider extends StatelessWidget {
-  final ValueChanged<double> updateSliderValue;
-  final ValueChanged<int> updateWidgetIndex;
-  final ValueGetter<double> getSliderValue;
-  final faceDataController = Get.find<FaceDataController>();
-
-  EditWithSlider ({
-    required this.updateSliderValue,
-    required this.updateWidgetIndex,
-    required this.getSliderValue,
-    Key? key, }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return  Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        color: Colors.white12
-      ),
-      child: Column(
-          children: <Widget>[
-            Padding(
-                padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
-                child: Slider(
-                  value: getSliderValue(),
-                  activeColor: Colors.white60,
-                  inactiveColor: Colors.white12,
-                  onChanged: (newRatio) => updateSliderValue(newRatio),
-                  min: 0.0,
-                  max: 1.0,
-                )
-            ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: Table(
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                children: [
-                  TableRow(
-                      children: [
-                        TextButton(
-                          onPressed: () => updateWidgetIndex(0),
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white60,
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () => updateSliderValue(0.0),
-                          child: Text(
-                            'Reset',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white60,
-                            ),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () => updateWidgetIndex(0),
-                          child: Text(
-                            'Accept',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white60,
-                            ),
-                          ),
-                        )
-                      ]
-                  )
-                ],
-              ),
-            )
-          ],
-      ),
     );
   }
 }
