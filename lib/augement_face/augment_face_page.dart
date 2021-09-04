@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:face_project_app/core/controllers/face_data_controller.dart';
@@ -7,17 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:share_extend/share_extend.dart';
-import 'package:gallery_saver/gallery_saver.dart';
-import '../animatedIndexStack.dart';
 
-/*
-
-class AugmentFacePage extends StatefulWidget{
-  @override
-  _AugmentFacePage createState() => _AugmentFacePage();
-}
-*/
 
 class AugmentFacePage extends StatelessWidget {
   final _faceDataController = Get.find<FaceDataController>();
