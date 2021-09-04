@@ -56,4 +56,5 @@ class HttpServiceNgrok implements HttpService{
     // TODO: implement latentFaceAttributesRequest
     throw UnimplementedError();
   }
+
 }
