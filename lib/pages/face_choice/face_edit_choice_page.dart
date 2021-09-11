@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:face_project_app/core/controllers/face_data_controller.dart';
-import 'package:face_project_app/face_choice/edit_choice_buttons.dart';
+import 'package:face_project_app/pages/face_choice/edit_choice_buttons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

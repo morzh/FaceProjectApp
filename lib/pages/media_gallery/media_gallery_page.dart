@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:face_project_app/core/controllers/face_data_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:face_project_app/media_gallery/view/media_grid.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
-import 'package:face_project_app/face_detection/face_detection_page.dart';
+
+import 'package:face_project_app/pages/media_gallery/media_grid.dart';
+import 'package:face_project_app/pages/face_detection/face_detection_page.dart';
+import 'package:face_project_app/core/controllers/face_data_controller.dart';
 
 class MediaGalleryPage extends StatefulWidget {
   @override

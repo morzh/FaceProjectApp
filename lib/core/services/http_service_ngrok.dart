@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:face_project_app/services/http_service_base.dart';
+import 'package:face_project_app/core/services/http_service_base.dart';
 
 
 
@@ -51,7 +51,7 @@ class HttpServiceNgrok implements HttpService{
   }
 
   @override
-  Future<Response> latentFaceAttributesRequest(String url, String key, List latent, Map attributes) async {
+  Future<Response> faceAugmentRequest(String url, String augment_type, List latent, Map attributes) async {
     Response response = await _dio.post('');
     return response;
   }

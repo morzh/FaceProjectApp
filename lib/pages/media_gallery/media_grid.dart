@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:face_project_app/face_detection/face_detection_page.dart';
+
+import 'package:face_project_app/pages/face_detection/face_detection_page.dart';
 import 'package:face_project_app/core/controllers/face_data_controller.dart';
 import 'package:face_project_app/core/controllers/face_detection_controller.dart';
 
