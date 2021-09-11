@@ -14,9 +14,9 @@ import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 
-import 'package:face_project_app/core/controllers/face_data_controller.dart';
 import 'package:face_project_app/pages/face_choice/face_edit_choice_page.dart';
 
+import 'package:face_project_app/core/controllers/face_data_controller.dart';
 import 'package:face_project_app/core/controllers/face_detection_controller.dart';
 import 'package:face_project_app/core/controllers/http_controller.dart';
 

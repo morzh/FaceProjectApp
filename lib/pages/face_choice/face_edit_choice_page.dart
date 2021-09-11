@@ -18,7 +18,6 @@ class AugmentChoicePage extends StatefulWidget {
 
 class _AugmentChoiceFacePage extends State<AugmentChoicePage> {
   int _widgetIndex = 0;
-  double _sliderValue = 0.0;
   final _facedataController = Get.find<FaceDataController>();
 
   void _updateWidgetIndex(int idx) {
@@ -39,10 +38,7 @@ class _AugmentChoiceFacePage extends State<AugmentChoicePage> {
                   imageProvider: Image.file(_facedataController.encodedImage.value).image,
                 )
             ),
-            EditChoiceButtons(
-                // updatewidgetIndex: _updateWidgetIndex,
-                // getImageFile: _getSelectedImage,
-            ),
+            EditChoiceButtons(),
               ]
               ),
         ),

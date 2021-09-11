@@ -8,8 +8,8 @@ class AllContollersBinding implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut<FaceDataController>(() => FaceDataController());
-    Get.lazyPut<FaceDetectionController>(() => FaceDetectionController());
-    Get.lazyPut<HttpController>(() => HttpController());
+    Get.put(FaceDetectionController());
+    Get.put(HttpController());
   }
 
 }
