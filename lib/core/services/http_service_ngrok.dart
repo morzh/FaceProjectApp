@@ -30,12 +30,12 @@ class HttpServiceNgrok implements HttpService{
 
   @override
   Future<Response> encodeFaceImage(String url, File image) async {
-    final String encodeRequestKey = "file";
-    // String encodeRequestKey = "encode_face_image";
+    final String requestKey = "file";
+    // String requestKey = "encode_face_image";
     final Response response;
     final filename = image.path.split('/').last;
     final formData = FormData.fromMap({
-      encodeRequestKey :  await MultipartFile.fromFile(image.path,
+      requestKey :  await MultipartFile.fromFile(image.path,
           filename : filename,
           contentType: MediaType('image', 'jpeg')
       )
@@ -63,6 +63,7 @@ class HttpServiceNgrok implements HttpService{
     };
 
     Response response = await _dio.post(url,
+      data: data,
       options: Options(headers: {
         HttpHeaders.contentTypeHeader: "application/json",
       }),

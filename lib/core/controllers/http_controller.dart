@@ -7,7 +7,7 @@ class HttpController extends GetxController {
   final httpService = HttpServiceNgrok();
   // get httpService => Get.put(HttpServiceNgrok());
 
-  encodeRequest(File image) async {
+  encodeFaceImage(File image) async {
     return await httpService.encodeFaceImage(ngrokUrl, image);
   }
 }

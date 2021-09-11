@@ -202,7 +202,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
 
   _uploadImageToServer2(File imageFile, String filePath) async {
     print('_uploadImageToServer2');
-    Response response = await _httpController.encodeRequest(imageFile);
+    Response response = await _httpController.encodeFaceImage(imageFile);
     print('response: ' + response.statusCode.toString() + '; headers' + response.headers.toString());
     final jsonResponse = jsonDecode(response.toString());
     final imageAlignedDecoded = base64.decode(await jsonResponse["ImageAligned"]);
