@@ -200,17 +200,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   _uploadImageToServer2(File imageFile, String filePath) async {
-    var uri = Uri.parse('http://b0b7-35-241-226-167.ngrok.io');
-    var request =  http.MultipartRequest("POST", uri);
-    request.files.add(
-        http.MultipartFile.fromBytes(
-            'file', await imageFile.readAsBytes(),
-            filename: basename(imageFile.path),
-            contentType: MediaType('image','jpeg')
-        )
-    );
-
-    final response = await request.send();
+    final response = await _httpController.encodeRequest(imageFile);
     print('response:');
     print(response.statusCode);
     // print(response.headers);
@@ -247,7 +237,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     }
 
     dataFile.writeAsBytesSync(data);
-    await _uploadImageToServer(dataFile, filePathFaceDataBase);
+    await _uploadImageToServer2(dataFile, filePathFaceDataBase);
   }
 }
 

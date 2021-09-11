@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
@@ -51,8 +52,20 @@ class HttpServiceNgrok implements HttpService{
   }
 
   @override
-  Future<Response> faceAugmentRequest(String url, String augment_type, List latent, Map attributes) async {
-    Response response = await _dio.post('');
+  Future<Response> faceAugmentRequest(String url, String augmentType, List latent, Map attributes) async {
+    var data =  {
+      "type" : augmentType,
+      "latent": latent,
+      "attributes": attributes
+    };
+
+    Response response = await _dio.post(url,
+      options: Options(headers: {
+        HttpHeaders.contentTypeHeader: "application/json",
+      }),
+      data: jsonEncode(data),
+    );
+
     return response;
   }
 }
