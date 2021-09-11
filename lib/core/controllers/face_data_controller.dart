@@ -13,7 +13,7 @@ class FaceDataController extends GetxController {
   final latentAugmented = Rx<List<dynamic>>([]);
   late Map faceAttributesMap;
   List<Rx<AssetImage>> augmentedFaces = <Rx<AssetImage>>[];
-  Rx<String> currrentAugmentChoice = ''.obs;
+  Rx<String> currentAugmentChoice = ''.obs;
   var currentSliderValue = 0.0.obs;
   var currentFaceIdx = 0.obs;
 

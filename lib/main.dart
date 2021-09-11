@@ -1,3 +1,4 @@
+import 'package:face_project_app/core/binding/all_controllers_binding.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'face_choice/face_edit_choice_page.dart';
@@ -10,6 +11,7 @@ import 'media_gallery/binding/media_gallery_page_binding.dart';
 import 'media_gallery/view/media_gallery_page.dart';
 
 void main() {
+  AllContollersBinding().dependencies();
   runApp(FaceProjectApp());
 }
 

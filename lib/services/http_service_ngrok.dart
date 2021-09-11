@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:face_project_app/services/http_service_base.dart';
 
-const BASE_URL = "http://6abe-34-78-52-237.ngrok.io";
+
 
 class HttpServiceNgrok implements HttpService{
   late Dio _dio;
@@ -23,23 +23,22 @@ class HttpServiceNgrok implements HttpService{
 
   @override
   void init() {
-    _dio = Dio(BaseOptions(
-      baseUrl: BASE_URL,
-    ));
+    _dio = Dio();
   }
 
   @override
-  Future<Response> imageRequest(String url, String key, File image) async {
+  Future<Response> encodeFaceImage(String url, File image) async {
+    String encodeRequestKey = "encode_face_image";
     Response response;
     String filename = image.path.split('/').last;
     FormData formData = FormData.fromMap({
-      key :  await MultipartFile.fromFile(image.path,
+      encodeRequestKey :  await MultipartFile.fromFile(image.path,
           filename : filename,
           contentType: MediaType('image', 'jpeg')
       )
     });
     try {
-      response = await _dio.post(BASE_URL,
+      response = await _dio.post(url,
           data: formData,
           options: Options(
               headers: {"Content-Type": "multipart/form-data"}
@@ -52,8 +51,8 @@ class HttpServiceNgrok implements HttpService{
   }
 
   @override
-  Future<Response> latentFaceAttributesRequest(String url, String key, List latent, Map attributes) {
-    // TODO: implement latentFaceAttributesRequest
-    throw UnimplementedError();
+  Future<Response> latentFaceAttributesRequest(String url, String key, List latent, Map attributes) async {
+    Response response = await _dio.post('');
+    return response;
   }
 }

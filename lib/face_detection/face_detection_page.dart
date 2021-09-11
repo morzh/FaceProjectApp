@@ -16,9 +16,9 @@ import 'package:get/get.dart';
 
 import 'package:face_project_app/core/controllers/face_data_controller.dart';
 import 'package:face_project_app/face_choice/face_edit_choice_page.dart';
+
 import 'package:face_project_app/core/controllers/face_detection_controller.dart';
-import 'package:face_project_app/core/controllers/face_data_controller.dart';
-import 'package:face_project_app/face_detection/binding/face_detection_page_binding.dart';
+import 'package:face_project_app/core/controllers/http_controller.dart';
 
 class ImageStruct {
   Uint8List imageData;
@@ -43,7 +43,8 @@ class FaceDetectionPage extends StatefulWidget {
 
 class _FaceDetectionPage extends State<FaceDetectionPage> {
   final _faceDataController = Get.find<FaceDataController>();
-  final _faceDetectionController = Get.find<FaceDetectionController>();  
+  final _faceDetectionController = Get.find<FaceDetectionController>();
+  final _httpController = Get.find<HttpController>();
   final _rng = Random();
   late final imageSize;
   bool _isLoading = false;
@@ -165,6 +166,40 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   _uploadImageToServer(File imageFile, String filePath) async {
+    var uri = Uri.parse('http://b0b7-35-241-226-167.ngrok.io');
+    var request =  http.MultipartRequest("POST", uri);
+    request.files.add(
+        http.MultipartFile.fromBytes(
+            'file', await imageFile.readAsBytes(),
+            filename: basename(imageFile.path),
+            contentType: MediaType('image','jpeg')
+        )
+    );
+
+    final response = await request.send();
+    print('response:');
+    print(response.statusCode);
+    // print(response.headers);
+    final jsonResponse = json.decode(await response.stream.bytesToString());
+    final imageAlignedDecoded = base64.decode(await jsonResponse["ImageAligned"]);
+    final imageEncodedDecoded = base64.decode(await jsonResponse["ImageEncoded"]);
+    final latents = jsonResponse["latent"];
+    final File alignedImage = File(filePath + '_aligned.jpg');
+    final File encodedImage = File(filePath + '_encoded.jpg');
+    alignedImage.writeAsBytesSync(imageAlignedDecoded.toList());
+    encodedImage.writeAsBytesSync(imageEncodedDecoded.toList());
+    setState(() {
+      _isLoading = !_isLoading;
+    });
+    _faceDataController.alignedImage.value = alignedImage;
+    _faceDataController.encodedImage.value = encodedImage;
+    _faceDataController.latentEncoded.value = latents;
+    _faceDataController.latentAugmented.value = latents;
+    _faceDataController.faceAttributesMap = await jsonResponse["faceAttributes"];
+    _faceDataController.readAugmentedImages('assets/image_sequences/young_old/', 10);
+  }
+
+  _uploadImageToServer2(File imageFile, String filePath) async {
     var uri = Uri.parse('http://b0b7-35-241-226-167.ngrok.io');
     var request =  http.MultipartRequest("POST", uri);
     request.files.add(
