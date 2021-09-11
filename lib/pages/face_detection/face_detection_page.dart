@@ -5,6 +5,7 @@ import 'dart:math';
 import 'dart:convert';
 import 'dart:core';
 
+import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:google_ml_kit/google_ml_kit.dart';
@@ -12,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:image_editor/image_editor.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:http/http.dart' as http;
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Response;
 
 import 'package:face_project_app/pages/face_choice/face_edit_choice_page.dart';
 
@@ -200,11 +201,10 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
 
   _uploadImageToServer2(File imageFile, String filePath) async {
-    final response = await _httpController.encodeRequest(imageFile);
-    print('response:');
-    print(response.statusCode);
-    // print(response.headers);
-    final jsonResponse = json.decode(await response.stream.bytesToString());
+    print('_uploadImageToServer2');
+    Response response = await _httpController.encodeRequest(imageFile);
+    print('response: ' + response.statusCode.toString() + '; headers' + response.headers.toString());
+    final jsonResponse = jsonDecode(response.toString());
     final imageAlignedDecoded = base64.decode(await jsonResponse["ImageAligned"]);
     final imageEncodedDecoded = base64.decode(await jsonResponse["ImageEncoded"]);
     final latents = jsonResponse["latent"];

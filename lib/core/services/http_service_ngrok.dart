@@ -1,14 +1,15 @@
 import 'dart:io';
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:face_project_app/core/services/http_service_base.dart';
 
-
-
 class HttpServiceNgrok implements HttpService{
-  late Dio _dio;
+  late final _dio;
+
+  HttpServiceNgrok() {
+    init();
+  }
 
   @override
   Future<Response> request(String url) async {
@@ -29,26 +30,28 @@ class HttpServiceNgrok implements HttpService{
 
   @override
   Future<Response> encodeFaceImage(String url, File image) async {
-    String encodeRequestKey = "encode_face_image";
-    Response response;
-    String filename = image.path.split('/').last;
-    FormData formData = FormData.fromMap({
+    final String encodeRequestKey = "file";
+    // String encodeRequestKey = "encode_face_image";
+    final Response response;
+    final filename = image.path.split('/').last;
+    final formData = FormData.fromMap({
       encodeRequestKey :  await MultipartFile.fromFile(image.path,
           filename : filename,
           contentType: MediaType('image', 'jpeg')
       )
     });
     try {
+      print(url);
       response = await _dio.post(url,
           data: formData,
           options: Options(
               headers: {"Content-Type": "multipart/form-data"}
           ));
+      return response;
     } on DioError catch (e) {
       print(e.message);
       throw Exception(e.message);
     }
-    return response;
   }
 
   @override
