@@ -10,4 +10,8 @@ class HttpController extends GetxController {
   encodeFaceImage(File image) async {
     return await httpService.encodeFaceImage(ngrokUrl, image);
   }
+
+  augmentFace(String augmentType, List latent, Map attributes) async {
+    return await httpService.faceAugmentRequest(ngrokUrl, augmentType, latent, attributes);
+  }
 }

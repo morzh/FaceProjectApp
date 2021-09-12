@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:face_project_app/core/controllers/face_data_controller.dart';
+import 'package:face_project_app/core/controllers/http_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -22,8 +23,9 @@ List<int> firstRowIndices = [0, 1, 2, 3];
 List<int> secondRowIndices = [4, 5, 6, 7];
 
 class EditChoiceButtons extends StatelessWidget {
-  final _faceDataController = Get.find<FaceDataController>();
   EditChoiceButtons({ Key? key, }) : super(key: key);
+  final _faceDataController = Get.find<FaceDataController>();
+  final _httpController = Get.find<HttpController>();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -41,7 +43,7 @@ class EditChoiceButtons extends StatelessWidget {
                   TableRow(
                       children: firstRowIndices.map((i) =>
                           TextButton(
-                            onPressed: () => Get.toNamed("/face_augmentation"),
+                            onPressed: () async => await requestAugementedSerquence('yaw'),
                             child: Image(image: _editChoiceButtons[i])
                           )
                       ).toList()
@@ -102,5 +104,13 @@ class EditChoiceButtons extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  requestAugementedSerquence(String augmentationType) async {
+    List latent = _faceDataController.latentAugmented.value;
+    Map attributes = _faceDataController.faceAttributesMap;
+    Response response =  await _httpController.augmentFace(augmentationType, latent, attributes);
+    print(response);
+    Get.toNamed("/face_augmentation");
   }
 }
