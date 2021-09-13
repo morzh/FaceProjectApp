@@ -43,7 +43,7 @@ class EditChoiceButtons extends StatelessWidget {
                   TableRow(
                       children: firstRowIndices.map((i) =>
                           TextButton(
-                            onPressed: () async => await requestAugementedSerquence('yaw'),
+                            onPressed: () async => await requestAugmentedSerquence('yaw'),
                             child: Image(image: _editChoiceButtons[i])
                           )
                       ).toList()
@@ -106,7 +106,7 @@ class EditChoiceButtons extends StatelessWidget {
     );
   }
 
-  requestAugementedSerquence(String augmentationType) async {
+  requestAugmentedSerquence(String augmentationType) async {
     List latent = _faceDataController.latentAugmented.value;
     Map attributes = _faceDataController.faceAttributesMap;
     Response response =  await _httpController.augmentFace(augmentationType, latent, attributes);

@@ -56,20 +56,19 @@ class HttpServiceNgrok implements HttpService{
 
   @override
   Future<Response> faceAugmentRequest(String url, String augmentType, List latent, Map attributes) async {
-    var data =  {
-      "type" : augmentType,
+    final data = {
+      "augment_type" : augmentType,
       "latent": latent,
       "attributes": attributes
     };
+    final formData = FormData.fromMap({
+      augmentType :  jsonEncode(data),
+    });
 
     Response response = await _dio.post(url,
       data: data,
-      options: Options(headers: {
-        HttpHeaders.contentTypeHeader: "application/json",
-      }),
-      data: jsonEncode(data),
+      // data: FormData.fromMap(data),
     );
-
     return response;
   }
 }
