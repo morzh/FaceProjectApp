@@ -23,6 +23,7 @@ List<AssetImage> _editChoiceButtons = [
 ];
 List<int> firstRowIndices = [0, 1, 2, 3];
 List<int> secondRowIndices = [4, 5, 6, 7];
+List<String> augmentTypesMap = ['yaw', 'age', 'expression', 'yaw'];
 
 class EditChoiceButtons extends StatelessWidget {
   EditChoiceButtons({ Key? key, }) : super(key: key);
@@ -45,7 +46,7 @@ class EditChoiceButtons extends StatelessWidget {
                   TableRow(
                       children: firstRowIndices.map((i) =>
                           TextButton(
-                            onPressed: () async => await _requestAugmentedSequence('yaw'),
+                            onPressed: () async => await _requestAugmentedSequence(augmentTypesMap[i]),
                             child: Image(image: _editChoiceButtons[i])
                           )
                       ).toList()
@@ -53,7 +54,7 @@ class EditChoiceButtons extends StatelessWidget {
                   TableRow(
                       children: secondRowIndices.map((i) =>
                           TextButton(
-                              onPressed: () async => await _requestAugmentedSequence('age'),
+                              onPressed: () async => await _requestAugmentedSequence(augmentTypesMap[i]),
                               child: Image(image: _editChoiceButtons[i])
                           )
                       ).toList()
