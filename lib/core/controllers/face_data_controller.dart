@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,7 @@ class FaceDataController extends GetxController {
   final latentAugmented = Rx<List<dynamic>>([]);
   late Map faceAttributesMap;
   List<Rx<AssetImage>> augmentedFaces = <Rx<AssetImage>>[];
+  List<Rx<Image>> augmentedFaceImages = <Rx<Image>>[];
   Rx<String> currentAugmentChoice = ''.obs;
   var currentSliderValue = 0.0.obs;
   var currentFaceIdx = 0.obs;

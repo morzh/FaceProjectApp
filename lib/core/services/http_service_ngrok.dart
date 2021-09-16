@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:face_project_app/core/services/http_service_base.dart';
@@ -61,14 +60,7 @@ class HttpServiceNgrok implements HttpService{
       "latent": latent,
       "attributes": attributes
     };
-    final formData = FormData.fromMap({
-      augmentType :  jsonEncode(data),
-    });
-
-    Response response = await _dio.post(url,
-      data: data,
-      // data: FormData.fromMap(data),
-    );
+    Response response = await _dio.post(url,  data: data, );
     return response;
   }
 }

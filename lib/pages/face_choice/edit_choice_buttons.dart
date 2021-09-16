@@ -1,9 +1,11 @@
 import 'dart:ui';
+import 'dart:convert';
 import 'package:face_project_app/core/controllers/face_data_controller.dart';
 import 'package:face_project_app/core/controllers/http_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get.dart' hide Response;
+import 'package:dio/dio.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 
@@ -43,7 +45,7 @@ class EditChoiceButtons extends StatelessWidget {
                   TableRow(
                       children: firstRowIndices.map((i) =>
                           TextButton(
-                            onPressed: () async => await requestAugmentedSerquence('yaw'),
+                            onPressed: () async => await _requestAugmentedSequence('yaw'),
                             child: Image(image: _editChoiceButtons[i])
                           )
                       ).toList()
@@ -51,7 +53,7 @@ class EditChoiceButtons extends StatelessWidget {
                   TableRow(
                       children: secondRowIndices.map((i) =>
                           TextButton(
-                              onPressed: () => Get.toNamed("/face_augmentation"),
+                              onPressed: () async => await _requestAugmentedSequence('age'),
                               child: Image(image: _editChoiceButtons[i])
                           )
                       ).toList()
@@ -106,11 +108,25 @@ class EditChoiceButtons extends StatelessWidget {
     );
   }
 
-  requestAugmentedSerquence(String augmentationType) async {
+  _requestAugmentedSequence(String augmentationType) async {
     List latent = _faceDataController.latentAugmented.value;
     Map attributes = _faceDataController.faceAttributesMap;
     Response response =  await _httpController.augmentFace(augmentationType, latent, attributes);
-    print(response);
+    _processAugmentRequest(response);
+    // print(response);
+    Get.toNamed("/face_augmentation");
+  }
+  
+  _processAugmentRequest(Response response) {
+    print('response: ' + response.statusCode.toString() + '; headers' + response.headers.toString());
+    final jsonResponse = jsonDecode(response.toString());
+    // print(jsonResponse);
+    _faceDataController.augmentedFaceImages.clear();
+    for(var imageString in jsonResponse['augmented_images']) {
+      final imageDecoded = base64.decode(imageString);
+      Image image = Image.memory(imageDecoded);
+      _faceDataController.augmentedFaceImages.add(image.obs);
+    }
     Get.toNamed("/face_augmentation");
   }
 }

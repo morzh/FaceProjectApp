@@ -9,6 +9,12 @@ import 'package:photo_view/photo_view.dart';
 
 class AugmentFacePage extends StatelessWidget {
   final _faceDataController = Get.find<FaceDataController>();
+
+  _getImage() {
+    int sliderValue = _faceDataController.currentSliderValue.value.toInt();
+    return _faceDataController.augmentedFaceImages[sliderValue].value.image;
+  }
+
   @override
   Widget build(BuildContext context){
     return Scaffold(
@@ -17,7 +23,8 @@ class AugmentFacePage extends StatelessWidget {
           children: <Widget>[
             Expanded(
                 child: Obx(() => PhotoView(
-                    imageProvider: _faceDataController.augmentedFaces[_faceDataController.currentSliderValue.value.toInt()].value,
+                    imageProvider: _getImage(),
+                    // imageProvider: _faceDataController.augmentedFaces[_faceDataController.currentSliderValue.value.toInt()].value,
               ),
             ),
             ),

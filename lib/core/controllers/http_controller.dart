@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:face_project_app/core/services/http_service_ngrok.dart';
 
 class HttpController extends GetxController {
-  final ngrokUrl = "http://112c-35-239-110-61.ngrok.io";
+  final ngrokUrl = "http://f7bf-35-221-3-132.ngrok.io";
   final httpService = HttpServiceNgrok();
   // get httpService => Get.put(HttpServiceNgrok());
 
