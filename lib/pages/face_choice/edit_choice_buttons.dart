@@ -23,7 +23,7 @@ List<AssetImage> _editChoiceButtons = [
 ];
 List<int> firstRowIndices = [0, 1, 2, 3];
 List<int> secondRowIndices = [4, 5, 6, 7];
-List<String> augmentTypesMap = ['yaw', 'age', 'expression', 'yaw'];
+List<String> augmentTypesMap = ['Yaw', 'Pitch', 'Age', 'Expression', 'Gender', 'Glasses', 'Beard', 'Baldness'];
 
 class EditChoiceButtons extends StatelessWidget {
   EditChoiceButtons({ Key? key, }) : super(key: key);
@@ -111,8 +111,9 @@ class EditChoiceButtons extends StatelessWidget {
 
   _requestAugmentedSequence(String augmentationType) async {
     List latent = _faceDataController.latentAugmented.value;
-    Map attributes = _faceDataController.faceAttributesMap;
-    Response response =  await _httpController.augmentFace(augmentationType, latent, attributes);
+    Map faceAttributes = _faceDataController.faceAttributesMap;
+    List faceLighting = _faceDataController.faceLighting.value;
+    Response response =  await _httpController.augmentFace(augmentationType, latent, faceAttributes, faceLighting);
     _processAugmentRequest(response);
     // print(response);
     Get.toNamed("/face_augmentation");

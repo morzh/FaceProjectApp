@@ -54,11 +54,12 @@ class HttpServiceNgrok implements HttpService{
   }
 
   @override
-  Future<Response> faceAugmentRequest(String url, String augmentType, List latent, Map attributes) async {
+  Future<Response> faceAugmentRequest(String url, String augmentType, List latent, Map attributes, List lighting) async {
     final data = {
       "augment_type" : augmentType,
       "latent": latent,
-      "attributes": attributes
+      "attributes": attributes,
+      "lighting": lighting
     };
     Response response = await _dio.post(url,  data: data, );
     return response;

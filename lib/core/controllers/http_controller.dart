@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:face_project_app/core/services/http_service_ngrok.dart';
 
 class HttpController extends GetxController {
-  final ngrokUrl = "http://2836-34-125-179-153.ngrok.io";
+  final ngrokUrl = "http://9fe9-34-67-115-229.ngrok.io";
   final httpService = HttpServiceNgrok();
   // get httpService => Get.put(HttpServiceNgrok());
 
@@ -11,7 +11,7 @@ class HttpController extends GetxController {
     return await httpService.encodeFaceImage(ngrokUrl, image);
   }
 
-  augmentFace(String augmentType, List latent, Map attributes) async {
-    return await httpService.faceAugmentRequest(ngrokUrl, augmentType, latent, attributes);
+  augmentFace(String augmentType, List latent, Map attributes, List lighting) async {
+    return await httpService.faceAugmentRequest(ngrokUrl, augmentType, latent, attributes, lighting);
   }
 }
