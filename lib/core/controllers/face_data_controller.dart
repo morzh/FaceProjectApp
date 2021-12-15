@@ -47,12 +47,13 @@ class FaceDataController extends GetxController {
   var currentSliderValue = 0.0.obs;
   var currentFaceIdx = 0.obs;
 
-  readAugmentedImages(String filepath, double imagesNumber) {
+  readAugmentedImageAssets(String filepath, double imagesNumber) {
     for(int idx = 0; idx < imagesNumber; ++idx) {
       augmentedFaces.add(AssetImage(filepath + idx.toString() + '.jpg').obs);
     }
   }
 
+/*
   updateCurrentState(int numberEntities, int choiceIndex, String augmentationName) {
     if (augmentedFaceImages.isEmpty || augmentedFaceLatents.isEmpty || faceLighting.value.isEmpty) { return; }
     final normalizedAttribute = choiceIndex / numberEntities;
@@ -60,6 +61,7 @@ class FaceDataController extends GetxController {
     faceAttributesMap[augmentationName] =  FaceAttributesRanges.min[augmentationName]! + normalizedAttribute * attributeRange;
     encodedImage.obs.value = augmentedFacesImages.obs[choiceIndex];
   }
+*/
 
   printEncodedData() {
     print(latentEncoded.value);

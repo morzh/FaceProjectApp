@@ -191,7 +191,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     _faceDataController.faceLighting.value = lighting;
     _faceDataController.latentAugmented.value = latents;
     _faceDataController.faceAttributesMap = await jsonResponse["faceAttributes"];
-    _faceDataController.readAugmentedImages('assets/image_sequences/young_old/', 10);
+    _faceDataController.readAugmentedImageAssets('assets/image_sequences/young_old/', 10);
 
     _faceDataController.printEncodedData();
   }
