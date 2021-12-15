@@ -123,11 +123,17 @@ class EditChoiceButtons extends StatelessWidget {
     print('response: ' + response.statusCode.toString() + '; headers' + response.headers.toString());
     final jsonResponse = jsonDecode(response.toString());
     // print(jsonResponse);
+
     _faceDataController.augmentedFaceImages.clear();
     for(var imageString in jsonResponse['augmented_images']) {
       final imageDecoded = base64.decode(imageString);
       Image image = Image.memory(imageDecoded);
       _faceDataController.augmentedFaceImages.add(image.obs);
+    }
+
+    _faceDataController.augmentedFaceLatents.clear();
+    for(var latent in jsonResponse['augmented_latents']) {
+      _faceDataController.augmentedFaceLatents.add(latent);
     }
     Get.toNamed("/face_augmentation");
   }

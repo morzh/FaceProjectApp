@@ -174,7 +174,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     final jsonResponse = jsonDecode(response.toString());
     final imageAlignedDecoded = base64.decode(await jsonResponse["ImageAligned"]);
     final imageEncodedDecoded = base64.decode(await jsonResponse["ImageEncoded"]);
-    final latents = jsonResponse["latent"];
+    final latent = jsonResponse["latent"];
     final lighting = jsonResponse["faceLighting"];
     final File alignedImage = File(filePath + '_aligned.jpg');
     final File encodedImage = File(filePath + '_encoded.jpg');
@@ -187,9 +187,9 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
 
     _faceDataController.alignedImage.value = alignedImage;
     _faceDataController.encodedImage.value = encodedImage;
-    _faceDataController.latentEncoded.value = latents;
+    _faceDataController.latentEncoded.value = latent;
     _faceDataController.faceLighting.value = lighting;
-    _faceDataController.latentAugmented.value = latents;
+    _faceDataController.latentAugmented.value = latent;
     _faceDataController.faceAttributesMap = await jsonResponse["faceAttributes"];
     _faceDataController.readAugmentedImageAssets('assets/image_sequences/young_old/', 10);
 
