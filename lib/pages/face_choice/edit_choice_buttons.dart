@@ -137,7 +137,7 @@ class EditChoiceButtons extends StatelessWidget {
     }
 
     assert(_faceDataController.augmentedFaceImages.length == _faceDataController.augmentedFaceLatents.length);
-    _faceDataController.augmentedEntitiesNumber.value = _faceDataController.augmentedFaceImages.length;
+    _faceDataController.augmentedEntitiesNumber.value = _faceDataController.augmentedFaceImages.length.toDouble();
 
     Get.toNamed("/face_augmentation");
   }
