@@ -39,7 +39,7 @@ class AugmentFacePage extends StatelessWidget {
                         inactiveColor: Colors.white12,
                         onChanged: (newValue) => _faceDataController.currentSliderValue.value = newValue,
                         min: 0.0,
-                        max: 9.0,
+                        max: 1.0,
                       )
                     )
                 ),

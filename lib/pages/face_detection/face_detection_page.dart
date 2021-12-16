@@ -167,7 +167,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   }
   
 
-  _uploadImageToServer2(File imageFile, String filePath) async {
+  _encodeRequest(File imageFile, String filePath) async {
     print('_uploadImageToServer2');
     Response response = await _httpController.encodeFaceImage(imageFile);
     print('response: ' + response.statusCode.toString() + '; headers' + response.headers.toString());
@@ -191,8 +191,6 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     _faceDataController.faceLighting.value = lighting;
     _faceDataController.latentAugmented.value = latent;
     _faceDataController.faceAttributesMap = await jsonResponse["faceAttributes"];
-    _faceDataController.readAugmentedImageAssets('assets/image_sequences/young_old/', 10);
-
     _faceDataController.printEncodedData();
   }
 
@@ -210,7 +208,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     }
 
     dataFile.writeAsBytesSync(data);
-    await _uploadImageToServer2(dataFile, filePathFaceDataBase);
+    await _encodeRequest(dataFile, filePathFaceDataBase);
   }
 }
 

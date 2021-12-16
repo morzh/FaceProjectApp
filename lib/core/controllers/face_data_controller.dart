@@ -34,12 +34,12 @@ class FaceDataController extends GetxController {
   final alignedImage = File('').obs;
   final encodedImage = File('').obs;
   final sourceImage = File('').obs;
+  final entitiesNumber = 11.obs;
   final latentEncoded = Rx<List<double>>([]);
   final latentAugmented = Rx<List<double>>([]);
   final faceLighting = Rx<List<double>>([]);
   late Map faceAttributesMap;
   
-  final augmentedFaces = <Rx<AssetImage>>[];
   final augmentedFaceImages = <Rx<Image>>[];
   final augmentedFaceLatents = <Rx<List<double>>>[];
   
@@ -47,21 +47,19 @@ class FaceDataController extends GetxController {
   var currentSliderValue = 0.0.obs;
   var currentFaceIdx = 0.obs;
 
-  readAugmentedImageAssets(String filepath, double imagesNumber) {
-    for(int idx = 0; idx < imagesNumber; ++idx) {
-      augmentedFaces.add(AssetImage(filepath + idx.toString() + '.jpg').obs);
-    }
+  sliderValue(String augmentationName) {
+    final attributeRange = FaceAttributesRanges.max[augmentationName]! - FaceAttributesRanges.min[augmentationName]!;
+    final attributeValueLength = faceAttributesMap[augmentationName] - FaceAttributesRanges.min[augmentationName]!;
+    return attributeValueLength / attributeRange;
   }
 
-/*
   updateCurrentState(int numberEntities, int choiceIndex, String augmentationName) {
     if (augmentedFaceImages.isEmpty || augmentedFaceLatents.isEmpty || faceLighting.value.isEmpty) { return; }
     final normalizedAttribute = choiceIndex / numberEntities;
     final attributeRange = FaceAttributesRanges.max[augmentationName]! - FaceAttributesRanges.min[augmentationName]!;
     faceAttributesMap[augmentationName] =  FaceAttributesRanges.min[augmentationName]! + normalizedAttribute * attributeRange;
-    encodedImage.obs.value = augmentedFacesImages.obs[choiceIndex];
+    encodedImage.value.writeAsBytesSync(augmentedFaceImages[choiceIndex].value.image.toString().codeUnits);
   }
-*/
 
   printEncodedData() {
     print(latentEncoded.value);

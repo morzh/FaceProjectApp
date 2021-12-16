@@ -133,7 +133,7 @@ class EditChoiceButtons extends StatelessWidget {
 
     _faceDataController.augmentedFaceLatents.clear();
     for(var latent in jsonResponse['augmented_latents']) {
-      _faceDataController.augmentedFaceLatents.add(latent);
+      _faceDataController.augmentedFaceLatents.add(latent.obs);
     }
     Get.toNamed("/face_augmentation");
   }
