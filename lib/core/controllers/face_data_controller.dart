@@ -34,7 +34,7 @@ class FaceDataController extends GetxController {
   final alignedImage = File('').obs;
   final encodedImage = File('').obs;
   final sourceImage = File('').obs;
-  final entitiesNumber = 11.obs;
+  final augmentedEntitiesNumber = 11.0.obs;
   final latentEncoded = Rx<List<double>>([]);
   final latentAugmented = Rx<List<double>>([]);
   final faceLighting = Rx<List<double>>([]);

@@ -11,8 +11,8 @@ class AugmentFacePage extends StatelessWidget {
   final _faceDataController = Get.find<FaceDataController>();
 
   _getImage() {
-    int sliderValue = _faceDataController.currentSliderValue.value.toInt();
-    return _faceDataController.augmentedFaceImages[sliderValue].value.image;
+    double imageIndex = _faceDataController.currentSliderValue.value! * (_faceDataController.augmentedEntitiesNumber.value - 1);
+    return _faceDataController.augmentedFaceImages[imageIndex.toInt()].value.image;
   }
 
   @override

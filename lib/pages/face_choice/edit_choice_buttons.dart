@@ -135,6 +135,10 @@ class EditChoiceButtons extends StatelessWidget {
     for(var latent in jsonResponse['augmented_latents']) {
       _faceDataController.augmentedFaceLatents.add(latent.obs);
     }
+
+    assert(_faceDataController.augmentedFaceImages.length == _faceDataController.augmentedFaceLatents.length);
+    _faceDataController.augmentedEntitiesNumber.value = _faceDataController.augmentedFaceImages.length;
+
     Get.toNamed("/face_augmentation");
   }
 }
