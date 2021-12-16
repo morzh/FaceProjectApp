@@ -11,8 +11,8 @@ class AugmentFacePage extends StatelessWidget {
   final _faceDataController = Get.find<FaceDataController>();
 
   _getImage() {
-    double imageIndex = _faceDataController.currentSliderValue.value! * (_faceDataController.augmentedEntitiesNumber.value - 1);
-    return _faceDataController.augmentedFaceImages[imageIndex.toInt()].value.image;
+    double imageIndex = _faceDataController.currentSliderValue.value! * (_faceDataController.augmentedEntitiesNumber.value - 1.0);
+    return _faceDataController.augmentedFaceImages[imageIndex.round()].value.image;
   }
 
   @override
@@ -24,7 +24,6 @@ class AugmentFacePage extends StatelessWidget {
             Expanded(
                 child: Obx(() => PhotoView(
                     imageProvider: _getImage(),
-                    // imageProvider: _faceDataController.augmentedFaces[_faceDataController.currentSliderValue.value.toInt()].value,
               ),
             ),
             ),
