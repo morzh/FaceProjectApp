@@ -72,7 +72,7 @@ class _MediaGridState extends State<MediaGrid> {
                     return GestureDetector(
                         onTap: () async {
                           _faceDataController.sourceImage.value = assetFile;
-                          Get.to(FaceDetectionPage());
+                          Get.toNamed("/pages.face_detection");
                         },
                         child: Container(
                           decoration: BoxDecoration(

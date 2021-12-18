@@ -34,36 +34,39 @@ class FaceDataController extends GetxController {
   final alignedImage = File('').obs;
   final encodedImage = File('').obs;
   final sourceImage = File('').obs;
-  final augmentedEntitiesNumber = 11.0.obs;
-  final latentEncoded = Rx<List<double>>([]);
-  final latentAugmented = Rx<List<double>>([]);
-  final faceLighting = Rx<List<double>>([]);
-  late Map faceAttributesMap;
+  late double augmentedEntitiesNumber = 11;
+
+  late List latent;
+  late List<dynamic> lighting;
+  late Map<int, List> weightsDeltas;
+  late Map attributes;
   
   final augmentedFaceImages = <Rx<Image>>[];
-  final augmentedFaceLatents = <Rx<List<double>>>[];
+  late List<dynamic> augmentedFaceLatents;
+  String currentAugmentationType = 'Yaw';
   
   var currentAugmentChoice = ''.obs;
   var currentSliderValue = 0.0.obs;
   var currentFaceIdx = 0.obs;
 
-  sliderValue(String augmentationName) {
-    final attributeRange = FaceAttributesRanges.max[augmentationName]! - FaceAttributesRanges.min[augmentationName]!;
-    final attributeValueLength = faceAttributesMap[augmentationName] - FaceAttributesRanges.min[augmentationName]!;
-    return attributeValueLength / attributeRange;
+  setSliderValue() {
+    String type = currentAugmentationType;
+    final attributeRange = FaceAttributesRanges.max[type]! - FaceAttributesRanges.min[type]!;
+    final attributeValueLength = attributes[type] - FaceAttributesRanges.min[type]!;
+    currentSliderValue.value =  attributeValueLength / attributeRange;
   }
 
   updateCurrentState(int numberEntities, int choiceIndex, String augmentationName) {
-    if (augmentedFaceImages.isEmpty || augmentedFaceLatents.isEmpty || faceLighting.value.isEmpty) { return; }
+    if (augmentedFaceImages.isEmpty || augmentedFaceLatents.isEmpty || lighting.isEmpty) { return; }
     final normalizedAttribute = choiceIndex / numberEntities;
     final attributeRange = FaceAttributesRanges.max[augmentationName]! - FaceAttributesRanges.min[augmentationName]!;
-    faceAttributesMap[augmentationName] =  FaceAttributesRanges.min[augmentationName]! + normalizedAttribute * attributeRange;
+    attributes[augmentationName] =  FaceAttributesRanges.min[augmentationName]! + normalizedAttribute * attributeRange;
     encodedImage.value.writeAsBytesSync(augmentedFaceImages[choiceIndex].value.image.toString().codeUnits);
   }
 
   printEncodedData() {
-    print(latentEncoded.value);
-    print(faceAttributesMap);
-    print(faceLighting.value);
+    print(latent);
+    print(attributes);
+    print(lighting);
   }
 }

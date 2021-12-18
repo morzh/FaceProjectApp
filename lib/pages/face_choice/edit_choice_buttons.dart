@@ -110,9 +110,11 @@ class EditChoiceButtons extends StatelessWidget {
   }
 
   _requestAugmentedSequence(String augmentationType) async {
-    List latent = _faceDataController.latentAugmented.value;
-    Map faceAttributes = _faceDataController.faceAttributesMap;
-    List faceLighting = _faceDataController.faceLighting.value;
+    _faceDataController.currentAugmentationType = augmentationType;
+    _faceDataController.setSliderValue();
+    List latent = _faceDataController.latent;
+    Map faceAttributes = _faceDataController.attributes;
+    List faceLighting = _faceDataController.lighting;
     Response response =  await _httpController.augmentFace(augmentationType, latent, faceAttributes, faceLighting);
     _processAugmentRequest(response);
     // print(response);
@@ -131,13 +133,15 @@ class EditChoiceButtons extends StatelessWidget {
       _faceDataController.augmentedFaceImages.add(image.obs);
     }
 
+/*
     _faceDataController.augmentedFaceLatents.clear();
     for(var latent in jsonResponse['augmented_latents']) {
-      _faceDataController.augmentedFaceLatents.add(latent.obs);
+      _faceDataController.augmentedFaceLatents.add(latent);
     }
+*/
 
-    assert(_faceDataController.augmentedFaceImages.length == _faceDataController.augmentedFaceLatents.length);
-    _faceDataController.augmentedEntitiesNumber.value = _faceDataController.augmentedFaceImages.length.toDouble();
+    // assert(_faceDataController.augmentedFaceImages.length == _faceDataController.augmentedFaceLatents.length);
+    _faceDataController.augmentedEntitiesNumber = _faceDataController.augmentedFaceImages.length.toDouble();
 
     Get.toNamed("/face_augmentation");
   }

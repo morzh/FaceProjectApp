@@ -168,16 +168,17 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
   
 
   _encodeRequest(File imageFile, String filePath) async {
-    print('_uploadImageToServer2');
+    print('encode POST Request');
     Response response = await _httpController.encodeFaceImage(imageFile);
     print('response: ' + response.statusCode.toString() + '; headers' + response.headers.toString());
     final jsonResponse = jsonDecode(response.toString());
     final imageAlignedDecoded = base64.decode(await jsonResponse["ImageAligned"]);
     final imageEncodedDecoded = base64.decode(await jsonResponse["ImageEncoded"]);
-    final latent = jsonResponse["latent"];
-    final lighting = jsonResponse["faceLighting"];
     final File alignedImage = File(filePath + '_aligned.jpg');
     final File encodedImage = File(filePath + '_encoded.jpg');
+    // final latent =
+    // final attributes =
+    // final lighting =
     alignedImage.writeAsBytesSync(imageAlignedDecoded.toList());
     encodedImage.writeAsBytesSync(imageEncodedDecoded.toList());
 
@@ -187,10 +188,10 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
 
     _faceDataController.alignedImage.value = alignedImage;
     _faceDataController.encodedImage.value = encodedImage;
-    _faceDataController.latentEncoded.value = latent;
-    _faceDataController.faceLighting.value = lighting;
-    _faceDataController.latentAugmented.value = latent;
-    _faceDataController.faceAttributesMap = await jsonResponse["faceAttributes"];
+    _faceDataController.latent = await jsonResponse["latent"];
+    _faceDataController.attributes = await jsonResponse["faceAttributes"];
+    _faceDataController.lighting = await jsonResponse["faceLighting"];
+    // _faceDataController.weightsDeltas = jsonResponse["weightsDeltas"];
     _faceDataController.printEncodedData();
   }
 

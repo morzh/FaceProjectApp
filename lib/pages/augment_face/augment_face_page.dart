@@ -11,7 +11,7 @@ class AugmentFacePage extends StatelessWidget {
   final _faceDataController = Get.find<FaceDataController>();
 
   _getImage() {
-    double imageIndex = _faceDataController.currentSliderValue.value! * (_faceDataController.augmentedEntitiesNumber.value - 1.0);
+    double imageIndex = _faceDataController.currentSliderValue.value * (_faceDataController.augmentedEntitiesNumber - 1.0);
     return _faceDataController.augmentedFaceImages[imageIndex.round()].value.image;
   }
 
@@ -50,7 +50,7 @@ class AugmentFacePage extends StatelessWidget {
                       TableRow(
                           children: [
                             TextButton(
-                              onPressed: () => _faceDataController.currentSliderValue.value = 0.0,
+                              onPressed: () => Get.back(),
                               child: Text(
                                 'Cancel',
                                 style: TextStyle(
@@ -72,7 +72,7 @@ class AugmentFacePage extends StatelessWidget {
                               ),
                             ),
                             TextButton(
-                              onPressed: () => Get.back(),
+                              onPressed: () => Get.toNamed('/face_edit_choice'),
                               child: Text(
                                 'Accept',
                                 style: TextStyle(
