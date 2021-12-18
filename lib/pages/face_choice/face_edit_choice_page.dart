@@ -24,24 +24,24 @@ class _AugmentChoiceFacePage extends State<AugmentChoicePage> {
     setState(() => _widgetIndex = idx);
   }
 
-  Future<File> _getSelectedImage() async {
-    return _facedataController.encodedImage.value;
-  }
   @override
   Widget build(BuildContext context){
-    return Scaffold(
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-                child: PhotoView(
-                  imageProvider: Image.file(_facedataController.encodedImage.value).image,
-                )
-            ),
-            EditChoiceButtons(),
-              ]
+    return WillPopScope(
+      onWillPop: () async => true,
+      child: Scaffold(
+        body: Container(
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                  child: Obx(() => PhotoView(
+                    imageProvider: _facedataController.encodedImage.value.image,
+                  ),)
               ),
-        ),
+              EditChoiceButtons(),
+                ]
+                ),
+          ),
+      ),
     );
   }
 }

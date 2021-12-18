@@ -43,14 +43,14 @@ class AugmentFacePage extends StatelessWidget {
                     )
                 ),
                 Padding(
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  padding: EdgeInsets.fromLTRB(10, 2, 10, 2),
                   child: Table(
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     children: [
                       TableRow(
                           children: [
                             TextButton(
-                              onPressed: () => Get.back(),
+                              onPressed: () => Get.offNamed('/face_edit_choice'),
                               child: Text(
                                 'Cancel',
                                 style: TextStyle(
@@ -61,7 +61,7 @@ class AugmentFacePage extends StatelessWidget {
                               ),
                             ),
                             TextButton(
-                              onPressed: () => _faceDataController.currentSliderValue.value = 0.0,
+                              onPressed: () => _faceDataController.resetSlider(),
                               child: Text(
                                 'Reset',
                                 style: TextStyle(
@@ -72,7 +72,10 @@ class AugmentFacePage extends StatelessWidget {
                               ),
                             ),
                             TextButton(
-                              onPressed: () => Get.toNamed('/face_edit_choice'),
+                              onPressed: () {
+                                _faceDataController.updateCurrentState();
+                                Get.toNamed('/face_edit_choice');
+                                },
                               child: Text(
                                 'Accept',
                                 style: TextStyle(

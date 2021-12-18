@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:core';
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -32,7 +33,7 @@ class FaceAttributesRanges {
 class FaceDataController extends GetxController {
   late final File croppedImage;
   final alignedImage = File('').obs;
-  final encodedImage = File('').obs;
+  final encodedImage = Image.memory(Uint8List(0)).obs;
   final sourceImage = File('').obs;
   late double augmentedEntitiesNumber = 11;
 
@@ -42,26 +43,44 @@ class FaceDataController extends GetxController {
   late Map attributes;
   
   final augmentedFaceImages = <Rx<Image>>[];
-  late List<dynamic> augmentedFaceLatents;
+  // final augmentedFaceLatents = <Rx<List>>[];
+  late List<dynamic> augmentedFaceLatents = [];
   String currentAugmentationType = 'Yaw';
   
   var currentAugmentChoice = ''.obs;
   var currentSliderValue = 0.0.obs;
+  var sliderInitValue = 0.0;
   var currentFaceIdx = 0.obs;
 
-  setSliderValue() {
+  initSlider() {
     String type = currentAugmentationType;
     final attributeRange = FaceAttributesRanges.max[type]! - FaceAttributesRanges.min[type]!;
     final attributeValueLength = attributes[type] - FaceAttributesRanges.min[type]!;
-    currentSliderValue.value =  attributeValueLength / attributeRange;
+    sliderInitValue =  attributeValueLength / attributeRange;
+    sliderInitValue.clamp(0.0, 1.0);
+    currentSliderValue.value = sliderInitValue;
   }
 
-  updateCurrentState(int numberEntities, int choiceIndex, String augmentationName) {
+  resetSlider() {
+    currentSliderValue.value = sliderInitValue;
+  }
+
+  updateCurrentState() async {
+    print('updateCurrentState');
+    print('currentAugmentationType: $currentAugmentationType');
     if (augmentedFaceImages.isEmpty || augmentedFaceLatents.isEmpty || lighting.isEmpty) { return; }
-    final normalizedAttribute = choiceIndex / numberEntities;
-    final attributeRange = FaceAttributesRanges.max[augmentationName]! - FaceAttributesRanges.min[augmentationName]!;
-    attributes[augmentationName] =  FaceAttributesRanges.min[augmentationName]! + normalizedAttribute * attributeRange;
-    encodedImage.value.writeAsBytesSync(augmentedFaceImages[choiceIndex].value.image.toString().codeUnits);
+
+    double choiceIndex = currentSliderValue.value * (augmentedEntitiesNumber - 1.0);
+    print('choiceIndex: ${choiceIndex.round()}');
+    final attributeRange = FaceAttributesRanges.max[currentAugmentationType]! - FaceAttributesRanges.min[currentAugmentationType]!;
+    print('attributeRange: $attributeRange');
+    attributes[currentAugmentationType] =  FaceAttributesRanges.min[currentAugmentationType]! + currentSliderValue.value * attributeRange;
+    print('attributes[currentAugmentationType]e: ${attributes[currentAugmentationType]}');
+    // final File newCurrentImage = File(encodedImage.value.path);
+    encodedImage.value = augmentedFaceImages[choiceIndex.round()].value;
+    latent = augmentedFaceLatents[choiceIndex.round()];
+    // encodedImage.value = newCurrentImage;
+    // print(encodedImage.canUpdate);
   }
 
   printEncodedData() {

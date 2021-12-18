@@ -71,7 +71,7 @@ class EditChoiceButtons extends StatelessWidget {
                     children: [
                       TextButton(
                           onPressed: () async {
-                            await GallerySaver.saveImage(_faceDataController.encodedImage.value.path);
+                            // await GallerySaver.saveImage(_faceDataController.encodedImage.value);
                             ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
@@ -96,7 +96,7 @@ class EditChoiceButtons extends StatelessWidget {
                       ),
                       TextButton(
                           onPressed: () async {
-                            ShareExtend.share(_faceDataController.encodedImage.value.path, "file");
+                            // ShareExtend.share(_faceDataController.encodedImage.value.path, "file");
                           },
                           child: Image(image: _editChoiceButtons[9])),
                     ]
@@ -111,7 +111,7 @@ class EditChoiceButtons extends StatelessWidget {
 
   _requestAugmentedSequence(String augmentationType) async {
     _faceDataController.currentAugmentationType = augmentationType;
-    _faceDataController.setSliderValue();
+    _faceDataController.initSlider();
     List latent = _faceDataController.latent;
     Map faceAttributes = _faceDataController.attributes;
     List faceLighting = _faceDataController.lighting;
@@ -133,11 +133,15 @@ class EditChoiceButtons extends StatelessWidget {
       _faceDataController.augmentedFaceImages.add(image.obs);
     }
 
-/*
     _faceDataController.augmentedFaceLatents.clear();
     for(var latent in jsonResponse['augmented_latents']) {
       _faceDataController.augmentedFaceLatents.add(latent);
     }
+
+/*
+    print('_faceDataController.augmentedFaceLatents.length: ${_faceDataController.augmentedFaceLatents.length}');
+    print('_faceDataController.augmentedFaceLatents[0].length: ${_faceDataController.augmentedFaceLatents[0].length}');
+    print('_faceDataController.augmentedFaceLatents[0][0].length: ${_faceDataController.augmentedFaceLatents[0][0].length}');
 */
 
     // assert(_faceDataController.augmentedFaceImages.length == _faceDataController.augmentedFaceLatents.length);

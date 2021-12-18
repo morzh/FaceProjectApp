@@ -187,7 +187,7 @@ class _FaceDetectionPage extends State<FaceDetectionPage> {
     });
 
     _faceDataController.alignedImage.value = alignedImage;
-    _faceDataController.encodedImage.value = encodedImage;
+    _faceDataController.encodedImage.value = Image.memory(imageEncodedDecoded);
     _faceDataController.latent = await jsonResponse["latent"];
     _faceDataController.attributes = await jsonResponse["faceAttributes"];
     _faceDataController.lighting = await jsonResponse["faceLighting"];
