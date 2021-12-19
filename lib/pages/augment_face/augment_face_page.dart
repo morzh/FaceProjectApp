@@ -74,7 +74,7 @@ class AugmentFacePage extends StatelessWidget {
                             TextButton(
                               onPressed: () {
                                 _faceDataController.updateCurrentState();
-                                Get.toNamed('/face_edit_choice');
+                                Get.offNamed('/face_edit_choice');
                                 },
                               child: Text(
                                 'Accept',
