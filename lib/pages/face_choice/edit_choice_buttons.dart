@@ -62,48 +62,6 @@ class EditChoiceButtons extends StatelessWidget {
                 ],
               )
           ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-            child: Table(
-              defaultColumnWidth: FixedColumnWidth(80),
-              children: [
-                TableRow(
-                    children: [
-                      TextButton(
-                          onPressed: () async {
-                            // await GallerySaver.saveImage(_faceDataController.encodedImage.value);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                    'Image saved',
-                                    style: TextStyle(
-                                      color: Colors.white54,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  backgroundColor: Colors.black45,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(25))
-                                  ),
-                                  behavior: SnackBarBehavior.floating,
-                                  width: 200,
-                                )
-                            );
-                          },
-                          child: Image(image: _editChoiceButtons[8])
-                      ),
-                      TextButton(
-                          onPressed: () async {
-                            // ShareExtend.share(_faceDataController.encodedImage.value.path, "file");
-                          },
-                          child: Image(image: _editChoiceButtons[9])),
-                    ]
-                )
-              ],
-            ),
-          )
         ],
       ),
     );

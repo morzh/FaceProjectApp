@@ -11,6 +11,11 @@ import 'package:photo_view/photo_view.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 
+List<AssetImage> _editChoiceButtons = [
+  AssetImage('assets/buttons_images/save.png'),
+  AssetImage('assets/buttons_images/share.png'),
+];
+
 class AugmentChoicePage extends StatefulWidget {
   @override
   _AugmentChoiceFacePage createState() => _AugmentChoiceFacePage();
@@ -41,6 +46,42 @@ class _AugmentChoiceFacePage extends State<AugmentChoicePage> {
                 ]
                 ),
           ),
+        bottomNavigationBar: BottomAppBar(
+          child: Row(
+            children: [
+              TextButton(
+                  onPressed: () async {
+                    // await GallerySaver.saveImage(_faceDataController.encodedImage.value);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Image saved',
+                            style: TextStyle(
+                              color: Colors.white54,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          backgroundColor: Colors.black45,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(25))
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                          width: 200,
+                        )
+                    );
+                  },
+                  child: Image(image: _editChoiceButtons[0])
+              ),
+              TextButton(
+                  onPressed: () async {
+                    // ShareExtend.share(_faceDataController.encodedImage.value.path, "file");
+                  },
+                  child: Image(image: _editChoiceButtons[1])),
+            ],
+          ),
+        ),
       ),
     );
   }
